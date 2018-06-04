@@ -8,6 +8,11 @@
 		/// </summary>
 		public const bool CompensateForTileGaps = true;
 
+		/// <summary>
+		/// Put the image in the center of the viewport if it's smaller
+		/// </summary>
+		public const bool CentralizeImageIfSmallerThanViewport = true;
+
 		#region Debug-only features
 
 #if DEBUG

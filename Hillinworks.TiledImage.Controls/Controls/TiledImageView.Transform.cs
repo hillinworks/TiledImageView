@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using Hillinworks.TiledImage.Properties;
 using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
@@ -63,7 +64,10 @@ namespace Hillinworks.TiledImage.Controls
 			double x;
 			if (this.ViewState.EnvelopSize.Width < this.ActualWidth)
 			{
-				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
+				if (Features.CentralizeImageIfSmallerThanViewport)
+				{
+					x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
+				}
 			}
 			else
 			{
@@ -73,7 +77,10 @@ namespace Hillinworks.TiledImage.Controls
 			double y;
 			if (this.ViewState.EnvelopSize.Height < this.ActualHeight)
 			{
-				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
+				if (Features.CentralizeImageIfSmallerThanViewport)
+				{
+					y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
+				}
 			}
 			else
 			{
