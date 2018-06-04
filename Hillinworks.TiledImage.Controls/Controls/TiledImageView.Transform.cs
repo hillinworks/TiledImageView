@@ -27,31 +27,47 @@ namespace Hillinworks.TiledImage.Controls
 				"ZoomLevel",
 				typeof(double),
 				typeof(TiledImageView),
-				new PropertyMetadata(1.0, OnZoomLevelChanged));
+				new PropertyMetadata(1.0, OnZoomLevelChanged, CoerceZoomLevel));
 
 		public double Rotation
 		{
-			get => (double)this.GetValue(RotationProperty);
+			get => (double) this.GetValue(RotationProperty);
 			set => this.SetValue(RotationProperty, value);
 		}
 
 		public double ZoomLevel
 		{
-			get => (double)this.GetValue(ZoomLevelProperty);
+			get => (double) this.GetValue(ZoomLevelProperty);
 			set => this.SetValue(ZoomLevelProperty, value);
 		}
 
 		public Vector Offset
 		{
-			get => (Vector)this.GetValue(OffsetProperty);
+			get => (Vector) this.GetValue(OffsetProperty);
 			set => this.SetValue(OffsetProperty, value);
 		}
 
 		private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
 
+		private static object CoerceZoomLevel(DependencyObject d, object baseValue)
+		{
+			return ((TiledImageView) d).CoerceZoomLevel((double) baseValue);
+		}
+
+		private double CoerceZoomLevel(double baseValue)
+		{
+			if (this.Source == null)
+			{
+				return baseValue;
+			}
+
+			// todo: overzoom and underzoom should be configurable somewhere
+			return baseValue.Clamp(0.5, this.Source.LOD.MaxZoomLevel * 2);
+		}
+
 		private static object CoerceOffset(DependencyObject d, object basevalue)
 		{
-			return ((TiledImageView)d).CoerceOffset((Vector)basevalue);
+			return ((TiledImageView) d).CoerceOffset((Vector) basevalue);
 		}
 
 		private Vector CoerceOffset(Vector baseValue)
@@ -63,7 +79,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double x;
 			if (this.ViewState.EnvelopSize.Width < this.ActualWidth
-				&& Features.CentralizeImageIfSmallerThanViewport)
+			    && Features.CentralizeImageIfSmallerThanViewport)
 			{
 				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
 			}
@@ -74,7 +90,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double y;
 			if (this.ViewState.EnvelopSize.Height < this.ActualHeight
-				&& Features.CentralizeImageIfSmallerThanViewport)
+			    && Features.CentralizeImageIfSmallerThanViewport)
 			{
 				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
 			}
@@ -88,17 +104,17 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static void OnRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnRotationChanged((double)e.NewValue);
+			((TiledImageView) d).OnRotationChanged((double) e.NewValue);
 		}
 
 		private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnZoomLevelChanged((double)e.NewValue);
+			((TiledImageView) d).OnZoomLevelChanged((double) e.NewValue);
 		}
 
 		private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnOffsetChanged((Vector)e.NewValue);
+			((TiledImageView) d).OnOffsetChanged((Vector) e.NewValue);
 		}
 
 		private void OnOffsetChanged(Vector offset)
