@@ -21,6 +21,7 @@ namespace Hillinworks.TiledImage.Controls
 		/// </summary>
 		private ImageSource GhostImage { get; set; }
 		private Rect GhostImageWorldRect { get; set; }
+		private	double GhostImageRotation { get; set; }
 
 		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 		private void CaptureGhostImage()
@@ -52,6 +53,8 @@ namespace Hillinworks.TiledImage.Controls
 				new Size(
 					this.ActualWidth * this.ViewState.ViewToWorldScale,
 					this.ActualHeight * this.ViewState.ViewToWorldScale));
+
+			this.GhostImageRotation = this.Rotation;
 		}
 
 
@@ -62,7 +65,15 @@ namespace Hillinworks.TiledImage.Controls
 				return;
 			}
 
+			// the ghost image captured is already rotated, we need to cancel that rotation first
+			context.PushTransform(
+				new RotateTransform(
+					-this.GhostImageRotation, 
+					this.GhostImageWorldRect.X, 
+					this.GhostImageWorldRect.Y));
+
 			context.DrawImage(this.GhostImage, this.GhostImageWorldRect);
+			context.Pop();
 		}
 	}
 }
