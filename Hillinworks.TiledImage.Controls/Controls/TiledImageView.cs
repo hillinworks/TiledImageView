@@ -9,10 +9,10 @@ namespace Hillinworks.TiledImage.Controls
 {
 	public partial class TiledImageView : Control
 	{
-		public static readonly DependencyProperty ImageProperty =
+		public static readonly DependencyProperty SourceProperty =
 			DependencyProperty.Register(
-				"TiledImage",
-				typeof(Imaging.TiledImage),
+				"Source",
+				typeof(TiledImageSource),
 				typeof(TiledImageView),
 				new PropertyMetadata(null, OnImageChanged));
 
@@ -22,21 +22,23 @@ namespace Hillinworks.TiledImage.Controls
 				new FrameworkPropertyMetadata(typeof(TiledImageView)));
 		}
 
-		public Imaging.TiledImage TiledImage
+		public TiledImageSource Source
 		{
-			get => (Imaging.TiledImage)this.GetValue(ImageProperty);
-			set => this.SetValue(ImageProperty, value);
+			get => (TiledImageSource)this.GetValue(SourceProperty);
+			set => this.SetValue(SourceProperty, value);
 		}
 
+		// ViewState and TilesManager are tightly couped all along with this control together
+		// They are only not null if Source is not null
 		internal ImageViewState ViewState { get; set; }
 		internal ImageTilesManager TilesManager { get; set; }
 
 		private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnImageChanged((Imaging.TiledImage)e.NewValue);
+			((TiledImageView)d).OnImageChanged((TiledImageSource)e.NewValue);
 		}
 
-		private void OnImageChanged(Imaging.TiledImage image)
+		private void OnImageChanged(TiledImageSource image)
 		{
 			if (image == null)
 			{
@@ -67,7 +69,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			context.DrawRectangle(this.Background, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
 
-			if (this.TiledImage == null || this.TilesManager.Tiles == null)
+			if (this.Source == null || this.TilesManager.Tiles == null)
 			{
 				return;
 			}

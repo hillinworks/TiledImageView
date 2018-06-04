@@ -37,7 +37,7 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 			public TiledImageView Owner { get; }
-			public Imaging.TiledImage TiledImage => this.Owner.TiledImage;
+			public Imaging.TiledImageSource TiledImage => this.Owner.Source;
 			public int LODLevel { get; private set; } = -1;
 			public Dimensions LODDimensions { get; private set; }
 

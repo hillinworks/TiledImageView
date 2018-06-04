@@ -3,9 +3,9 @@ using Hillinworks.TiledImage.Imaging.Loaders;
 
 namespace Hillinworks.TiledImage.Imaging
 {
-	public class TiledImage : IDisposable
+	public class TiledImageSource : IDisposable
 	{
-		public TiledImage(IImageLoader imageLoader)
+		public TiledImageSource(IImageLoader imageLoader)
 		{
 			this.ImageLoader = imageLoader;
 			this.ImageLoader.Initialize();

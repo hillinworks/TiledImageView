@@ -8,7 +8,7 @@ namespace Hillinworks.TiledImage.Demo
 		{
 			this.InitializeComponent();
 
-			TiledImage.TiledImage = new Imaging.TiledImage(new OpenStreetMapLoader());
+			TiledImage.Source = new Imaging.TiledImageSource(new OpenStreetMapLoader());
 		}
 	}
 }

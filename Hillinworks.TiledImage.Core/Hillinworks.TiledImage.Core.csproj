@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Imaging\Dimensions.cs" />
     <Compile Include="Imaging\ILoadTileTask.cs" />
-    <Compile Include="Imaging\TiledImage.cs" />
+    <Compile Include="Imaging\TiledImageSource.cs" />
     <Compile Include="Imaging\ImageDimensions.cs" />
     <Compile Include="Imaging\Loaders\IImageLoader.cs" />
     <Compile Include="Imaging\Loaders\WebImageLoader.cs" />

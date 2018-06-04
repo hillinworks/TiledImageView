@@ -34,7 +34,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			private TiledImageView Owner { get; }
 			private ImageViewState ViewState => this.Owner.ViewState;
-			private Imaging.TiledImage TiledImage => this.Owner.TiledImage;
+			private Imaging.TiledImageSource TiledImage => this.Owner.Source;
 
 
 			public void UpdateTiles()
