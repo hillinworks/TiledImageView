@@ -117,12 +117,12 @@ namespace Hillinworks.TiledImage.Controls
 
 		void IScrollInfo.SetHorizontalOffset(double offset)
 		{
-			this.Offset = new Vector(offset + this.ActualWidth / 2, this.Offset.Y);
+			this.Offset = new Vector(offset, this.Offset.Y);
 		}
 
 		void IScrollInfo.SetVerticalOffset(double offset)
 		{
-			this.Offset = new Vector(this.Offset.X, offset + this.ActualHeight / 2);
+			this.Offset = new Vector(this.Offset.X, offset);
 		}
 
 		private void UpdateScrollability()
