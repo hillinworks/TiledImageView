@@ -31,19 +31,19 @@ namespace Hillinworks.TiledImage.Controls
 
 		public double Rotation
 		{
-			get => (double) this.GetValue(RotationProperty);
+			get => (double)this.GetValue(RotationProperty);
 			set => this.SetValue(RotationProperty, value);
 		}
 
 		public double ZoomLevel
 		{
-			get => (double) this.GetValue(ZoomLevelProperty);
+			get => (double)this.GetValue(ZoomLevelProperty);
 			set => this.SetValue(ZoomLevelProperty, value);
 		}
 
 		public Vector Offset
 		{
-			get => (Vector) this.GetValue(OffsetProperty);
+			get => (Vector)this.GetValue(OffsetProperty);
 			set => this.SetValue(OffsetProperty, value);
 		}
 
@@ -51,7 +51,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static object CoerceOffset(DependencyObject d, object basevalue)
 		{
-			return ((TiledImageView) d).CoerceOffset((Vector) basevalue);
+			return ((TiledImageView)d).CoerceOffset((Vector)basevalue);
 		}
 
 		private Vector CoerceOffset(Vector baseValue)
@@ -62,12 +62,10 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 			double x;
-			if (this.ViewState.EnvelopSize.Width < this.ActualWidth)
+			if (this.ViewState.EnvelopSize.Width < this.ActualWidth
+				&& Features.CentralizeImageIfSmallerThanViewport)
 			{
-				if (Features.CentralizeImageIfSmallerThanViewport)
-				{
-					x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
-				}
+				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
 			}
 			else
 			{
@@ -75,34 +73,32 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 			double y;
-			if (this.ViewState.EnvelopSize.Height < this.ActualHeight)
+			if (this.ViewState.EnvelopSize.Height < this.ActualHeight
+				&& Features.CentralizeImageIfSmallerThanViewport)
 			{
-				if (Features.CentralizeImageIfSmallerThanViewport)
-				{
-					y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
-				}
+				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
 			}
 			else
 			{
 				y = baseValue.Y.Clamp(0, this.ViewState.EnvelopSize.Height - this.ActualHeight);
 			}
-			
+
 			return new Vector(x, y);
 		}
 
 		private static void OnRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnRotationChanged((double) e.NewValue);
+			((TiledImageView)d).OnRotationChanged((double)e.NewValue);
 		}
 
 		private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnZoomLevelChanged((double) e.NewValue);
+			((TiledImageView)d).OnZoomLevelChanged((double)e.NewValue);
 		}
 
 		private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnOffsetChanged((Vector) e.NewValue);
+			((TiledImageView)d).OnOffsetChanged((Vector)e.NewValue);
 		}
 
 		private void OnOffsetChanged(Vector offset)
