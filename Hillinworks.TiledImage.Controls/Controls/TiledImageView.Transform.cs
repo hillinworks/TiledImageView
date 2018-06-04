@@ -59,8 +59,27 @@ namespace Hillinworks.TiledImage.Controls
 			{
 				return baseValue;
 			}
-			var x = baseValue.X.Clamp(0, this.ViewState.EnvelopSize.Width - this.ActualWidth);
-			var y = baseValue.Y.Clamp(0, this.ViewState.EnvelopSize.Height - this.ActualHeight);
+
+			double x;
+			if (this.ViewState.EnvelopSize.Width < this.ActualWidth)
+			{
+				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
+			}
+			else
+			{
+				x = baseValue.X.Clamp(0, this.ViewState.EnvelopSize.Width - this.ActualWidth);
+			}
+
+			double y;
+			if (this.ViewState.EnvelopSize.Height < this.ActualHeight)
+			{
+				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
+			}
+			else
+			{
+				y = baseValue.Y.Clamp(0, this.ViewState.EnvelopSize.Height - this.ActualHeight);
+			}
+			
 			return new Vector(x, y);
 		}
 
