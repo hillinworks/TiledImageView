@@ -29,9 +29,12 @@ namespace Hillinworks.TiledImage.Controls
 				return;
 			}
 
-			LODText.Text = $"LOD: {tiledImageView.ViewState.LODLevel} @ {tiledImageView.ViewState.ViewToLODScale:0.#}x";
-			var tileCount = tiledImageView.TilesManager.Tiles.Length;
-			var loadProgress = tiledImageView.TilesManager.Tiles.Sum(t => t.LoadTask.LoadProgress) / tileCount * 100;
+			LODText.Text = tiledImageView.ViewState == null
+				? "LOD: 0 @ 0x"
+				: $"LOD: {tiledImageView.ViewState.LODLevel} @ {tiledImageView.ViewState.ViewToLODScale:0.#}x";
+
+			var tileCount = tiledImageView.TilesManager?.Tiles.Length ?? 0;
+			var loadProgress = tiledImageView.TilesManager?.Tiles.Sum(t => t.LoadTask.LoadProgress) / tileCount * 100 ?? 100;
 			TilesText.Text = $"Tiles: {tileCount}, {loadProgress:0.#}% loaded";
 		}
 	}
