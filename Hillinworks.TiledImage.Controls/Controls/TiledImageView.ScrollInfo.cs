@@ -127,8 +127,8 @@ namespace Hillinworks.TiledImage.Controls
 
 		private void UpdateScrollability()
 		{
-			this.CanHorizontallyScroll = this.ActualWidth < this.ViewState.EnvelopSize.Width;
-			this.CanVerticallyScroll = this.ActualHeight < this.ViewState.EnvelopSize.Height;
+			this.CanHorizontallyScroll = this.ViewState != null && this.ActualWidth < this.ViewState.EnvelopSize.Width;
+			this.CanVerticallyScroll = this.ViewState != null && this.ActualHeight < this.ViewState.EnvelopSize.Height;
 			this.InvalidateScrollInfo();
 		}
 
