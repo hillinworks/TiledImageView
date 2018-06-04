@@ -28,12 +28,6 @@
 		public static string GhostImageSavePath { get; } = @"d:\\1.png";
 
 		/// <summary>
-		///     Draw the bounding boxes of the actual size (black), core size (red), viewport (orange) and layout rect (yellow)
-		///     of the ImageView control.
-		/// </summary>
-		public static bool DrawImageViewBoundaries { get; } = true;
-
-		/// <summary>
 		///     Print the current stats on the top-left of the ImageView control.
 		/// </summary>
 		public static bool PrintImageViewStats { get; } = true;

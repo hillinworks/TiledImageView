@@ -158,21 +158,8 @@ namespace Hillinworks.TiledImage.Controls
 				}
 			}
 
-#if DEBUG
-			if (Features.DrawImageViewBoundaries)
-			{
-				context.DrawRectangle(null, new Pen(Brushes.Red, 2 * worldScale), new Rect(this.ViewState.EnvelopSize));
-				context.DrawRectangle(null, new Pen(Brushes.Orange, 2 * worldScale), new Rect(this.ViewState.ContentSize));
-			}
-#endif
 			context.Pop();
 
-#if DEBUG
-			if (Features.DrawImageViewBoundaries)
-			{
-				context.DrawRectangle(null, new Pen(Brushes.Black, 2), new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-			}
-#endif
 		}
 	}
 }
