@@ -73,6 +73,8 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 
+			var worldScale = this.ViewState.ViewToWorldScale;
+
 			context.PushTransform(new MatrixTransform(this.ViewState.WorldToViewMatrix));
 
 			//this.RenderGhostImage(context);
@@ -82,6 +84,7 @@ namespace Hillinworks.TiledImage.Controls
 #if DEBUG
 			if (Features.DrawTileStatus)
 			{
+				var consolasTypeface = new Typeface("Consolas");
 				foreach (var tile in tiles)
 				{
 					if (tile.LoadTask.Status == LoadTileStatus.Succeed)
@@ -92,9 +95,9 @@ namespace Hillinworks.TiledImage.Controls
 					foreach (var tileRect in tile.Regions)
 					{
 						var renderRect = tileRect;
-						renderRect.Inflate(-5, -5);
+						renderRect.Inflate(-5 * worldScale, -5 * worldScale);
 						var debugBrush = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
-						context.DrawRectangle(Brushes.Transparent, new Pen(debugBrush, 1), renderRect);
+						context.DrawRectangle(Brushes.Transparent, new Pen(debugBrush, 1 * worldScale), renderRect);
 
 						var text = "";
 						switch (tile.LoadTask.Status)
@@ -110,17 +113,22 @@ namespace Hillinworks.TiledImage.Controls
 								break;
 						}
 
-						var textPosition = renderRect.TopLeft;
+						// WPF does not allow font size larger than 32768em, so we have to scale the text
+						// using a transform
+						context.PushTransform(new ScaleTransform(worldScale, worldScale));
+
+						var textPosition = new Point(renderRect.X / worldScale + 5, renderRect.Y / worldScale + 5);
 
 						context.DrawText(
 							new FormattedText(
 								text,
 								CultureInfo.CurrentCulture,
 								FlowDirection.LeftToRight,
-								new Typeface("Courier New"),
-								32,
+								consolasTypeface,
+								18,
 								debugBrush),
 							textPosition);
+						context.Pop();
 					}
 				}
 			}
@@ -134,7 +142,7 @@ namespace Hillinworks.TiledImage.Controls
 					{
 						if (Features.CompensateForTileGaps)
 						{
-							tileRect.Inflate(this.ViewState.ViewToWorldScale * 0.5, this.ViewState.ViewToWorldScale * 0.5);
+							tileRect.Inflate(worldScale * 0.5, worldScale * 0.5);
 						}
 						context.DrawImage(tile.LoadTask.Bitmap, tileRect);
 					}
@@ -151,8 +159,8 @@ namespace Hillinworks.TiledImage.Controls
 #if DEBUG
 			if (Features.DrawImageViewBoundaries)
 			{
-				context.DrawRectangle(null, new Pen(Brushes.Red, 2), new Rect(this.ViewState.EnvelopSize));
-				context.DrawRectangle(null, new Pen(Brushes.Orange, 2), new Rect(this.ViewState.ContentSize));
+				context.DrawRectangle(null, new Pen(Brushes.Red, 2 * worldScale), new Rect(this.ViewState.EnvelopSize));
+				context.DrawRectangle(null, new Pen(Brushes.Orange, 2 * worldScale), new Rect(this.ViewState.ContentSize));
 			}
 #endif
 			context.Pop();
