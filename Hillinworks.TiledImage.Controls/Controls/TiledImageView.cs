@@ -149,7 +149,7 @@ namespace Hillinworks.TiledImage.Controls
 						context.DrawImage(tile.LoadTask.Bitmap, tileRect);
 					}
 				}
-				else
+				else if (Features.DarkenLoadingTiles)
 				{
 					foreach (var tileRect in tile.Regions)
 					{

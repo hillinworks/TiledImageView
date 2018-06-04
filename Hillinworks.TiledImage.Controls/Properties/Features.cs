@@ -13,6 +13,11 @@
 		/// </summary>
 		public static bool CentralizeImageIfSmallerThanViewport { get; } = true;
 
+		/// <summary>
+		/// Darken the tiles which are not loaded yet.
+		/// </summary>
+		public static bool DarkenLoadingTiles { get; } = false;
+
 		#region Debug-only features
 
 #if DEBUG
