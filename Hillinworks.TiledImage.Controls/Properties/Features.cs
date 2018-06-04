@@ -2,6 +2,12 @@
 {
 	internal static class Features
 	{
+
+		/// <summary>
+		/// Inflate tile render regions by 0.5 pixels to compensate possible gaps between them
+		/// </summary>
+		public const bool CompensateForTileGaps = true;
+
 		#region Debug-only features
 
 #if DEBUG
@@ -31,6 +37,8 @@
 		///     Draw status (failed, canceled, load progress etc.) and bounding boxes of tiles that haven't been loaded.
 		/// </summary>
 		public static bool DrawTileStatus { get; } = false;
+
+
 
 #endif
 

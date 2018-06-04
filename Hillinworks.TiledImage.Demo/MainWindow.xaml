@@ -11,7 +11,7 @@
         <ScrollViewer CanContentScroll="True"
                       HorizontalScrollBarVisibility="Visible">
             
-            <controls:TiledImageView x:Name="TiledImage" />
+            <controls:TiledImageView x:Name="TiledImage" UseLayoutRounding="True" />
         </ScrollViewer>
         <controls:TiledImageViewDebug DataContext="{Binding ElementName=TiledImage}" />
     </Grid>

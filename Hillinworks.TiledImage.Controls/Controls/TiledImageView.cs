@@ -24,7 +24,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		public Imaging.TiledImage TiledImage
 		{
-			get => (Imaging.TiledImage) this.GetValue(ImageProperty);
+			get => (Imaging.TiledImage)this.GetValue(ImageProperty);
 			set => this.SetValue(ImageProperty, value);
 		}
 
@@ -33,7 +33,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnImageChanged((Imaging.TiledImage) e.NewValue);
+			((TiledImageView)d).OnImageChanged((Imaging.TiledImage)e.NewValue);
 		}
 
 		private void OnImageChanged(Imaging.TiledImage image)
@@ -100,7 +100,7 @@ namespace Hillinworks.TiledImage.Controls
 						switch (tile.LoadTask.Status)
 						{
 							case LoadTileStatus.Loading:
-								text = $"{(int) (tile.LoadTask.LoadProgress * 100)}%";
+								text = $"{(int)(tile.LoadTask.LoadProgress * 100)}%";
 								break;
 							case LoadTileStatus.Failed:
 								text = $"Failed: {tile.LoadTask.ErrorMessage}";
@@ -132,6 +132,10 @@ namespace Hillinworks.TiledImage.Controls
 				{
 					foreach (var tileRect in tile.Regions)
 					{
+						if (Features.CompensateForTileGaps)
+						{
+							tileRect.Inflate(this.ViewState.ViewToWorldScale * 0.5, this.ViewState.ViewToWorldScale * 0.5);
+						}
 						context.DrawImage(tile.LoadTask.Bitmap, tileRect);
 					}
 				}
