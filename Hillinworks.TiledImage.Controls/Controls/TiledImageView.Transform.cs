@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
+using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {
@@ -10,7 +12,7 @@ namespace Hillinworks.TiledImage.Controls
 				"Offset",
 				typeof(Vector),
 				typeof(TiledImageView),
-				new PropertyMetadata(default(Vector), OnOffsetChanged));
+				new PropertyMetadata(default(Vector), OnOffsetChanged, CoerceOffset));
 
 		public static readonly DependencyProperty RotationProperty =
 			DependencyProperty.Register(
@@ -45,6 +47,22 @@ namespace Hillinworks.TiledImage.Controls
 		}
 
 		private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
+
+		private static object CoerceOffset(DependencyObject d, object basevalue)
+		{
+			return ((TiledImageView) d).CoerceOffset((Vector) basevalue);
+		}
+
+		private Vector CoerceOffset(Vector baseValue)
+		{
+			if (this.ViewState == null)
+			{
+				return baseValue;
+			}
+			var x = baseValue.X.Clamp(0, this.ViewState.EnvelopSize.Width - this.ActualWidth);
+			var y = baseValue.Y.Clamp(0, this.ViewState.EnvelopSize.Height - this.ActualHeight);
+			return new Vector(x, y);
+		}
 
 		private static void OnRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
