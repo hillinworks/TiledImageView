@@ -20,22 +20,17 @@
 		/// <summary>
 		///     Save the ghost tiledImage to a PNG file for debug purpose.
 		/// </summary>
-		public static bool SaveGhostImage { get; } = true;
+		public static bool SaveGhostImage { get; } = false;
 
 		/// <summary>
 		///     The path where the ghost tiledImage should be saved.
 		/// </summary>
-		public static string GhostImageSavePath { get; } = @"d:\\1.png";
-
-		/// <summary>
-		///     Print the current stats on the top-left of the ImageView control.
-		/// </summary>
-		public static bool PrintImageViewStats { get; } = true;
+		public static string GhostImageSavePath { get; } = @"ghostimage.png";
 
 		/// <summary>
 		///     Draw status (failed, canceled, load progress etc.) and bounding boxes of tiles that haven't been loaded.
 		/// </summary>
-		public static bool DrawTileStatus { get; } = true;
+		public static bool DrawTileStatus { get; } = false;
 
 
 

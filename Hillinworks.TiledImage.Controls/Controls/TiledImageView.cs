@@ -79,7 +79,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			context.PushTransform(new MatrixTransform(this.ViewState.WorldToViewMatrix));
 
-			//this.RenderGhostImage(context);
+			this.RenderGhostImage(context);
 
 			var tiles = this.TilesManager.Tiles;
 

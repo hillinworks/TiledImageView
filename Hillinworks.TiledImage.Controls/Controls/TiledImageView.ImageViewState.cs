@@ -230,6 +230,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			private void SetLODLevel(int lodLevel)
 			{
+				this.Owner.CaptureGhostImage();
 				this.LODLevel = lodLevel;
 				this.LODDimensions = this.TiledImage.Dimensions.AtLODLevel(this.LODLevel);
 				this.LODToWorldScale = Math.Pow(2, this.LODLevel);
