@@ -13,11 +13,6 @@ namespace Hillinworks.TiledImage.Controls
 	    {
 		    this.LoadTask = loadTask;
 	    }
-
-	    public TileRenderInfo(LoadTileTask loadTask, Rect rect)
-            : this(loadTask)
-        {
-            this.Regions.Add(rect);
-        }
+		
     }
 }
