@@ -6,12 +6,12 @@
 		/// <summary>
 		/// Inflate tile render regions by 0.5 pixels to compensate possible gaps between them
 		/// </summary>
-		public const bool CompensateForTileGaps = true;
+		public static bool CompensateForTileGaps { get; } = true;
 
 		/// <summary>
 		/// Put the image in the center of the viewport if it's smaller
 		/// </summary>
-		public const bool CentralizeImageIfSmallerThanViewport = true;
+		public static bool CentralizeImageIfSmallerThanViewport { get; } = true;
 
 		#region Debug-only features
 
