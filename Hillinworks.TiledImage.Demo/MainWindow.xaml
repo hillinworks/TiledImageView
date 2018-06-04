@@ -7,12 +7,12 @@
         xmlns:controls="clr-namespace:Hillinworks.TiledImage.Controls;assembly=Hillinworks.TiledImage.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="800">
-    <Grid Margin="150">
+    <Grid>
         <ScrollViewer CanContentScroll="True"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             
-            <controls:TiledImageView x:Name="TiledImage" UseLayoutRounding="True" />
+            <controls:TiledImageView x:Name="TiledImage" />
         </ScrollViewer>
         <controls:TiledImageViewDebug DataContext="{Binding ElementName=TiledImage}" />
     </Grid>
