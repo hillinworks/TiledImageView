@@ -29,8 +29,8 @@ namespace Hillinworks.TiledImage.Controls
 			set => this.CanHorizontallyScroll = value;
 		}
 
-		double IScrollInfo.ExtentWidth => this.ViewState?.EnvelopSize.Width ?? 0.0;
-		double IScrollInfo.ExtentHeight => this.ViewState?.EnvelopSize.Height ?? 0.0;
+		double IScrollInfo.ExtentWidth => this.ExtentSize.Width;
+		double IScrollInfo.ExtentHeight => this.ExtentSize.Height;
 		double IScrollInfo.ViewportWidth => this.RenderSize.Width;
 		double IScrollInfo.ViewportHeight => this.RenderSize.Height;
 

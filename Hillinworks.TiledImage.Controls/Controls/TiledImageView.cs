@@ -16,6 +16,16 @@ namespace Hillinworks.TiledImage.Controls
 				typeof(TiledImageView),
 				new PropertyMetadata(null, OnSourceChanged));
 
+		private static readonly DependencyPropertyKey ExtentSizePropertyKey =
+			DependencyProperty.RegisterReadOnly(
+				"ExtentSize",
+				typeof(Size),
+				typeof(TiledImageView),
+				new PropertyMetadata(default(Size)));
+
+		public static readonly DependencyProperty ExtentSizeProperty
+			= ExtentSizePropertyKey.DependencyProperty;
+
 		static TiledImageView()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(TiledImageView),
@@ -28,20 +38,27 @@ namespace Hillinworks.TiledImage.Controls
 			this.IsManipulationEnabled = Features.SupportTouchManipulation;
 		}
 
+		public Size ExtentSize
+		{
+			get => (Size) this.GetValue(ExtentSizeProperty);
+			private set => this.SetValue(ExtentSizePropertyKey, value);
+		}
+
 		public TiledImageSource Source
 		{
-			get => (TiledImageSource)this.GetValue(SourceProperty);
+			get => (TiledImageSource) this.GetValue(SourceProperty);
 			set => this.SetValue(SourceProperty, value);
 		}
 
 		// ViewState and TilesManager are tightly couped all along with this control together
 		// They are only not null if Source is not null
 		internal ImageViewState ViewState { get; set; }
+
 		internal ImageTilesManager TilesManager { get; set; }
 
 		private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnSourceChanged((TiledImageSource)e.NewValue);
+			((TiledImageView) d).OnSourceChanged((TiledImageSource) e.NewValue);
 		}
 
 		private void OnSourceChanged(TiledImageSource image)
@@ -114,7 +131,7 @@ namespace Hillinworks.TiledImage.Controls
 						switch (tile.LoadTask.Status)
 						{
 							case LoadTileStatus.Loading:
-								text = $"{(int)(tile.LoadTask.LoadProgress * 100)}%";
+								text = $"{(int) (tile.LoadTask.LoadProgress * 100)}%";
 								break;
 							case LoadTileStatus.Failed:
 								text = $"Failed: {tile.LoadTask.ErrorMessage}";
@@ -168,7 +185,6 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 			context.Pop();
-
 		}
 	}
 }

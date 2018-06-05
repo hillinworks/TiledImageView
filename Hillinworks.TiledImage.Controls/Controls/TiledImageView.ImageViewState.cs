@@ -13,31 +13,21 @@ namespace Hillinworks.TiledImage.Controls
 		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 		internal sealed class ImageViewState
 		{
+			private Size _envelopSize;
+			private int _layer;
 			private Vector _offset;
 			private double _rotation;
-			private double _zoomLevel;
-			private int _layer;
 			private Matrix _worldToEnvelopMatrix;
 			private Matrix _worldToViewMatrix;
+			private double _zoomLevel;
 
 			public ImageViewState(TiledImageView owner)
 			{
 				this.Owner = owner;
 			}
 
-			public void Initialize()
-			{
-				this.Zoom(this.TiledImage.LOD.InitialZoomLevel, new Point());
-
-				this.UpdatingOwner = true;
-				this.Owner.ZoomLevel = this.ZoomLevel;
-				this.Owner.Offset = this.Offset;
-				this.Owner.Rotation = this.Rotation;
-				this.UpdatingOwner = false;
-			}
-
 			public TiledImageView Owner { get; }
-			public Imaging.TiledImageSource TiledImage => this.Owner.Source;
+			public TiledImageSource TiledImage => this.Owner.Source;
 			public int LODLevel { get; private set; } = -1;
 			public Dimensions LODDimensions { get; private set; }
 
@@ -132,12 +122,20 @@ namespace Hillinworks.TiledImage.Controls
 					this.WorldToViewMatrix = matrix;
 
 					this.OnTransformChanged();
-
 				}
 			}
 
 			public Size ContentSize { get; private set; }
-			public Size EnvelopSize { get; private set; }
+
+			public Size EnvelopSize
+			{
+				get => _envelopSize;
+				private set
+				{
+					_envelopSize = value;
+					this.Owner.ExtentSize = _envelopSize;
+				}
+			}
 
 			public Matrix EnvelopToWorldMatrix { get; private set; }
 
@@ -165,9 +163,20 @@ namespace Hillinworks.TiledImage.Controls
 
 			private bool UpdatingOwner { get; set; }
 
+			public void Initialize()
+			{
+				this.Zoom(this.TiledImage.LOD.InitialZoomLevel, new Point());
+
+				this.UpdatingOwner = true;
+				this.Owner.ZoomLevel = this.ZoomLevel;
+				this.Owner.Offset = this.Offset;
+				this.Owner.Rotation = this.Rotation;
+				this.UpdatingOwner = false;
+			}
+
 			/// <summary>
-			/// Perform the specified action while keeping the relationship between the specified point in view space 
-			/// and its corresponded point in world space unchanged.
+			///     Perform the specified action while keeping the relationship between the specified point in view space
+			///     and its corresponded point in world space unchanged.
 			/// </summary>
 			private void FixViewPointInWorld(Point pointInView, Action action)
 			{
@@ -248,17 +257,15 @@ namespace Hillinworks.TiledImage.Controls
 
 			private int CalculateLODLevel(double zoomLevel)
 			{
-				return ((int)Math.Floor(Math.Log(this.TiledImage.LOD.MaxZoomLevel / zoomLevel, 2)))
+				return ((int) Math.Floor(Math.Log(this.TiledImage.LOD.MaxZoomLevel / zoomLevel, 2)))
 					.Clamp(0, this.TiledImage.LOD.MaxLODLevel);
 			}
 
 			public void SetTransform(Matrix matrix)
 			{
-
 				// todo
 				throw new NotImplementedException();
 			}
-
 		}
 	}
 }
