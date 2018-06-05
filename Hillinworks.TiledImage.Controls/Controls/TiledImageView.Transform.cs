@@ -29,29 +29,65 @@ namespace Hillinworks.TiledImage.Controls
 				typeof(TiledImageView),
 				new PropertyMetadata(1.0, OnZoomLevelChanged, CoerceZoomLevel));
 
+		public static readonly DependencyProperty LayerProperty =
+			DependencyProperty.Register(
+				"Layer",
+				typeof(int),
+				typeof(TiledImageView),
+				new PropertyMetadata(1, OnLayerChanged, CoerceLayer));
+
+		public int Layer
+		{
+			get => (int)this.GetValue(LayerProperty);
+			set => this.SetValue(LayerProperty, value);
+		}
+
+
 		public double Rotation
 		{
-			get => (double) this.GetValue(RotationProperty);
+			get => (double)this.GetValue(RotationProperty);
 			set => this.SetValue(RotationProperty, value);
 		}
 
 		public double ZoomLevel
 		{
-			get => (double) this.GetValue(ZoomLevelProperty);
+			get => (double)this.GetValue(ZoomLevelProperty);
 			set => this.SetValue(ZoomLevelProperty, value);
 		}
 
 		public Vector Offset
 		{
-			get => (Vector) this.GetValue(OffsetProperty);
+			get => (Vector)this.GetValue(OffsetProperty);
 			set => this.SetValue(OffsetProperty, value);
 		}
 
 		private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
 
+		private static object CoerceLayer(DependencyObject d, object baseValue)
+		{
+			return ((TiledImageView)d).CoerceLayer((int)baseValue);
+		}
+
+		private object CoerceLayer(int baseValue)
+		{
+			return this.ViewState == null 
+				? Math.Max(0, baseValue) 
+				: baseValue.Clamp(0, this.Source.Dimensions.LayerCount);
+		}
+
+		private static void OnLayerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			((TiledImageView)d).OnLayerChanged((int)e.NewValue);
+		}
+
+		private void OnLayerChanged(int layer)
+		{
+			this.ViewState.Layer = layer;
+		}
+
 		private static object CoerceZoomLevel(DependencyObject d, object baseValue)
 		{
-			return ((TiledImageView) d).CoerceZoomLevel((double) baseValue);
+			return ((TiledImageView)d).CoerceZoomLevel((double)baseValue);
 		}
 
 		private double CoerceZoomLevel(double baseValue)
@@ -67,7 +103,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static object CoerceOffset(DependencyObject d, object basevalue)
 		{
-			return ((TiledImageView) d).CoerceOffset((Vector) basevalue);
+			return ((TiledImageView)d).CoerceOffset((Vector)basevalue);
 		}
 
 		private Vector CoerceOffset(Vector baseValue)
@@ -79,7 +115,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double x;
 			if (this.ViewState.EnvelopSize.Width < this.ActualWidth
-			    && Features.CentralizeImageIfSmallerThanViewport)
+				&& Features.CentralizeImageIfSmallerThanViewport)
 			{
 				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
 			}
@@ -90,7 +126,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double y;
 			if (this.ViewState.EnvelopSize.Height < this.ActualHeight
-			    && Features.CentralizeImageIfSmallerThanViewport)
+				&& Features.CentralizeImageIfSmallerThanViewport)
 			{
 				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
 			}
@@ -104,17 +140,17 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static void OnRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnRotationChanged((double) e.NewValue);
+			((TiledImageView)d).OnRotationChanged((double)e.NewValue);
 		}
 
 		private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnZoomLevelChanged((double) e.NewValue);
+			((TiledImageView)d).OnZoomLevelChanged((double)e.NewValue);
 		}
 
 		private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView) d).OnOffsetChanged((Vector) e.NewValue);
+			((TiledImageView)d).OnOffsetChanged((Vector)e.NewValue);
 		}
 
 		private void OnOffsetChanged(Vector offset)
@@ -140,9 +176,9 @@ namespace Hillinworks.TiledImage.Controls
 		private void OnZoomLevelChanged(double zoomLevel)
 		{
 			var focalPoint = this.InputFocalPoint;
-			if (focalPoint.X < 0 
-				|| focalPoint.Y < 0 
-				|| focalPoint.X > this.ActualWidth 
+			if (focalPoint.X < 0
+				|| focalPoint.Y < 0
+				|| focalPoint.X > this.ActualWidth
 				|| focalPoint.Y > this.ActualHeight)
 			{
 				// zoom about our center if the focal point is out of bound, this is good for 
