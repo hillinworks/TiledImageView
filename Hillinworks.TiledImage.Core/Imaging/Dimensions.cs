@@ -85,6 +85,7 @@ namespace Hillinworks.TiledImage.Imaging
 			this.LayerCount = layerCount;
 			this.HorizontalMargin = horizontalMargin;
 			this.VerticalMargin = verticalMargin;
+			this.Validate();
 		}
 
 		public Dimensions AtLODLevel(int lodLevel)
@@ -98,6 +99,44 @@ namespace Hillinworks.TiledImage.Imaging
 				this.LayerCount,
 				this.HorizontalMargin / lodFactor,
 				this.VerticalMargin / lodFactor);
+		}
+
+		internal void Validate()
+		{
+			if (this.HorizontalTiles <= 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.HorizontalTiles)} must be greater than zero");
+			}
+
+			if (this.VerticalTiles <= 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.VerticalTiles)} must be greater than zero");
+			}
+
+			if (this.TileWidth <= 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.TileWidth)} must be greater than zero");
+			}
+
+			if (this.TileHeight <= 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.TileHeight)} must be greater than zero");
+			}
+
+			if (this.LayerCount <= 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.LayerCount)} must be greater than zero");
+			}
+
+			if (this.HorizontalMargin < 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.HorizontalMargin)} must be greater than or equal to zero");
+			}
+
+			if (this.VerticalMargin < 0)
+			{
+				throw new InvalidDimensionsException($"{nameof(this.VerticalMargin)} must be greater than or equal to zero");
+			}
 		}
 	}
 }

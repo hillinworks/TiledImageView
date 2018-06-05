@@ -9,6 +9,8 @@ namespace Hillinworks.TiledImage.Imaging
 		{
 			this.ImageLoader = imageLoader;
 			this.ImageLoader.Initialize();
+			this.ImageLoader.LOD.Validate();
+			this.ImageLoader.Dimensions.Validate();
 		}
 
 		public Dimensions Dimensions => this.ImageLoader.Dimensions;

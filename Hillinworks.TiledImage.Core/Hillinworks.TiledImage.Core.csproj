@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Imaging\Dimensions.cs" />
     <Compile Include="Imaging\ILoadTileTask.cs" />
+    <Compile Include="Imaging\InvalidLODInfoException.cs" />
+    <Compile Include="Imaging\InvalidDimensionsException.cs" />
     <Compile Include="Imaging\TiledImageSource.cs" />
     <Compile Include="Imaging\ImageDimensions.cs" />
     <Compile Include="Imaging\Loaders\IImageLoader.cs" />
