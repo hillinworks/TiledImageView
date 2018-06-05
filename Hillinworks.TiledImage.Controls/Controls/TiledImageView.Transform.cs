@@ -139,7 +139,18 @@ namespace Hillinworks.TiledImage.Controls
 
 		private void OnZoomLevelChanged(double zoomLevel)
 		{
-			this.ViewState?.Zoom(zoomLevel, this.InputFocalPoint);
+			var focalPoint = this.InputFocalPoint;
+			if (focalPoint.X < 0 
+				|| focalPoint.Y < 0 
+				|| focalPoint.X > this.ActualWidth 
+				|| focalPoint.Y > this.ActualHeight)
+			{
+				// zoom about our center if the focal point is out of bound, this is good for 
+				// host program to implement button/slider based zooming
+				focalPoint = this.CenterPoint;
+			}
+
+			this.ViewState?.Zoom(zoomLevel, focalPoint);
 
 			this.UpdateScrollability();
 		}
