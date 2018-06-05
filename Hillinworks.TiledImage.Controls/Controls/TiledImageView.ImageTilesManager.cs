@@ -137,7 +137,9 @@ namespace Hillinworks.TiledImage.Controls
 				foreach (var pair in this.TilesMap)
 				{
 					var tileIndex = new TileIndex.Full(pair.Key.Column, pair.Key.Row, layer, pair.Key.LODLevel);
-					newTiles.Add(tileIndex, this.CreateTileRenderInfo(tileIndex));
+					var renderInfo = this.CreateTileRenderInfo(tileIndex);
+					renderInfo.Regions.AddRange(pair.Value.Regions);
+					newTiles.Add(tileIndex, renderInfo);
 					this.DisposeLoadTileTask(pair.Value.LoadTask);
 				}
 
