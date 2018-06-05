@@ -14,7 +14,7 @@ namespace Hillinworks.TiledImage.Controls
 				"Source",
 				typeof(TiledImageSource),
 				typeof(TiledImageView),
-				new PropertyMetadata(null, OnImageChanged));
+				new PropertyMetadata(null, OnSourceChanged));
 
 		static TiledImageView()
 		{
@@ -39,12 +39,12 @@ namespace Hillinworks.TiledImage.Controls
 		internal ImageViewState ViewState { get; set; }
 		internal ImageTilesManager TilesManager { get; set; }
 
-		private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnImageChanged((TiledImageSource)e.NewValue);
+			((TiledImageView)d).OnSourceChanged((TiledImageSource)e.NewValue);
 		}
 
-		private void OnImageChanged(TiledImageSource image)
+		private void OnSourceChanged(TiledImageSource image)
 		{
 			if (image == null)
 			{
@@ -56,6 +56,9 @@ namespace Hillinworks.TiledImage.Controls
 				this.ViewState = new ImageViewState(this);
 				this.TilesManager = new ImageTilesManager(this);
 				this.ViewState.Initialize();
+
+				this.Zoom(image.LOD.InitialZoomLevel, this.CenterPoint);
+				this.Centralize();
 			}
 
 			this.UpdateScrollability();

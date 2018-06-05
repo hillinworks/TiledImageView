@@ -226,9 +226,9 @@ namespace Hillinworks.TiledImage.Controls
 
 		public void Centralize()
 		{
-			this.Offset = new Vector(
+			this.Translate(new Vector(
 				(this.ViewState.EnvelopSize.Width - this.ActualWidth) / 2,
-				(this.ViewState.EnvelopSize.Height - this.ActualHeight) / 2);
+				(this.ViewState.EnvelopSize.Height - this.ActualHeight) / 2));
 		}
 
 		private void Rotate(double rotation, Point origin)
