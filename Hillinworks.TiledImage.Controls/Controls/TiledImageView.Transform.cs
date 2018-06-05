@@ -40,7 +40,7 @@ namespace Hillinworks.TiledImage.Controls
 		public int Layer
 		{
 			get => (int)this.GetValue(LayerProperty);
-			set => this.SetValue(LayerProperty, value);
+			set => this.SetValue(LayerProperty, this.CoerceLayer(value));
 		}
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace Hillinworks.TiledImage.Controls
 		public double Rotation
 		{
 			get => (double)this.GetValue(RotationProperty);
-			set => this.SetValue(RotationProperty, value);
+			set => this.SetValue(RotationProperty, this.CoerceRotation(value));
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace Hillinworks.TiledImage.Controls
 		public double ZoomLevel
 		{
 			get => (double)this.GetValue(ZoomLevelProperty);
-			set => this.SetValue(ZoomLevelProperty, value);
+			set => this.SetValue(ZoomLevelProperty, this.CoerceZoomLevel(value));
 		}
 
 		/// <summary>
@@ -76,7 +76,7 @@ namespace Hillinworks.TiledImage.Controls
 		public Vector Offset
 		{
 			get => (Vector)this.GetValue(OffsetProperty);
-			set => this.SetValue(OffsetProperty, value);
+			set => this.SetValue(OffsetProperty, this.CoerceOffset(value));
 		}
 
 		private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
