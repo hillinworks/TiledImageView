@@ -61,6 +61,7 @@
     <Compile Include="Imaging\TileIndex.Full.cs" />
     <Compile Include="Imaging\TileIndex.Layered.cs" />
     <Compile Include="Imaging\TileIndex.LOD.cs" />
+    <Compile Include="LoadTileFailedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\BitmapExtensions.cs" />
     <Compile Include="Utilities\MathExtensions.cs" />

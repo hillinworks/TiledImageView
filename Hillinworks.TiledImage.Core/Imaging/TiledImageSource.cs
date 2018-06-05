@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Hillinworks.TiledImage.Imaging.Loaders;
 
 namespace Hillinworks.TiledImage.Imaging
@@ -28,6 +30,32 @@ namespace Hillinworks.TiledImage.Imaging
 			this.ImageLoader.BeginLoadTileAsync(task);
 		}
 
+		public Task<BitmapSource> LoadTileAsync(TileIndex.Full index)
+		{
+			var task = new LoadTileTask(index);
+			var completionSource = new TaskCompletionSource<BitmapSource>();
+			task.LoadStateChanged += (o, e) =>
+			{
+				switch (task.Status)
+				{
+					case LoadTileStatus.Loading:
+						break;
+					case LoadTileStatus.Succeed:
+						completionSource.SetResult(task.Bitmap);
+						break;
+					case LoadTileStatus.Failed:
+						completionSource.SetException(new LoadTileFailedException(task.ErrorMessage));
+						break;
+					case LoadTileStatus.Canceled:
+						completionSource.SetCanceled();
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			};
+			this.BeginLoadTileAsync(task);
+			return completionSource.Task;
+		}
 
 		protected virtual void Dispose(bool disposing)
 		{
