@@ -201,15 +201,20 @@ namespace Hillinworks.TiledImage.Controls
 			private void UpdateMatrices()
 			{
 				this.ContentSize = new Size(
-					this.LODDimensions.Width / this.ViewToLODScale,
-					this.LODDimensions.Height / this.ViewToLODScale);
+					this.LODDimensions.ContentWidth / this.ViewToLODScale,
+					this.LODDimensions.ContentHeight / this.ViewToLODScale);
+
+				var horizontalMargin = this.LODDimensions.HorizontalMargin / this.ViewToLODScale;
+				var verticalMargin = this.LODDimensions.VerticalMargin / this.ViewToLODScale;
 
 				var matrix = Matrix.Identity;
-
-				matrix.RotateAt(-this.Rotation, this.ContentSize.Width / 2, this.ContentSize.Height / 2);
+				matrix.RotateAt(
+					-this.Rotation,
+					this.ContentSize.Width / 2 + horizontalMargin,
+					this.ContentSize.Height / 2 + verticalMargin);
 
 				var envelopBoundaryVertices = matrix.TransformVertices(
-					new Rect(new Point(), this.ContentSize));
+					new Rect(new Point(horizontalMargin, verticalMargin), this.ContentSize));
 
 				var envelopLeft = envelopBoundaryVertices.Min(v => v.X);
 				var envelopRight = envelopBoundaryVertices.Max(v => v.X);
