@@ -24,6 +24,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		public TiledImageView()
 		{
+			this.InitializeCommandBindings();
 			this.IsManipulationEnabled = Features.SupportTouchManipulation;
 		}
 

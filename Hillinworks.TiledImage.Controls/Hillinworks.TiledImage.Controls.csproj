@@ -47,6 +47,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TiledImageView.Commands.cs" />
     <Compile Include="Controls\TiledImageView.GhostImage.cs" />
     <Compile Include="Controls\TiledImageView.TileCuller.cs" />
     <Compile Include="Controls\TiledImageView.ImageViewState.cs" />
