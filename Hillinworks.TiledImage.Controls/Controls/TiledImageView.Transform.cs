@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Hillinworks.TiledImage.Properties;
 using Hillinworks.TiledImage.Utilities;
@@ -20,7 +21,7 @@ namespace Hillinworks.TiledImage.Controls
 				"Rotation",
 				typeof(double),
 				typeof(TiledImageView),
-				new PropertyMetadata(0.0, OnRotationChanged));
+				new PropertyMetadata(0.0, OnRotationChanged, CoerceRotation));
 
 		public static readonly DependencyProperty ZoomLevelProperty =
 			DependencyProperty.Register(
@@ -38,46 +39,73 @@ namespace Hillinworks.TiledImage.Controls
 
 		public int Layer
 		{
-			get => (int)this.GetValue(LayerProperty);
+			get => (int) this.GetValue(LayerProperty);
 			set => this.SetValue(LayerProperty, value);
 		}
 
-
+		/// <summary>
+		/// Get or set the rotation of the image.
+		/// </summary>
+		/// <remarks>
+		/// To rotate about a point, use the <see cref="TiledImageView.Rotate"/> method. Setting this directly 
+		/// will defaultly rotate about the center of the view.
+		/// </remarks>
 		public double Rotation
 		{
-			get => (double)this.GetValue(RotationProperty);
+			get => (double) this.GetValue(RotationProperty);
 			set => this.SetValue(RotationProperty, value);
 		}
 
+		/// <summary>
+		/// Get or set the zoom level of the image.
+		/// </summary>
+		/// <remarks>
+		/// To zoom about a point, use the <see cref="TiledImageView.Zoom"/> method. Setting this directly
+		/// will defaulty zoom about the mouse position if it's inside of the view, otherwise the center point
+		/// of the view.
+		/// </remarks>
 		public double ZoomLevel
 		{
-			get => (double)this.GetValue(ZoomLevelProperty);
+			get => (double) this.GetValue(ZoomLevelProperty);
 			set => this.SetValue(ZoomLevelProperty, value);
 		}
 
+		/// <summary>
+		/// Get or set the offset (translation) of the image.
+		/// </summary>
 		public Vector Offset
 		{
-			get => (Vector)this.GetValue(OffsetProperty);
+			get => (Vector) this.GetValue(OffsetProperty);
 			set => this.SetValue(OffsetProperty, value);
 		}
 
 		private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
 
+		private static object CoerceRotation(DependencyObject d, object baseValue)
+		{
+			return ((TiledImageView) d).CoerceRotation((double) baseValue);
+		}
+
+		private double CoerceRotation(double baseValue)
+		{
+			return baseValue.PositiveModulo(360);
+		}
+
 		private static object CoerceLayer(DependencyObject d, object baseValue)
 		{
-			return ((TiledImageView)d).CoerceLayer((int)baseValue);
+			return ((TiledImageView) d).CoerceLayer((int) baseValue);
 		}
 
 		private object CoerceLayer(int baseValue)
 		{
-			return this.ViewState == null 
-				? Math.Max(0, baseValue) 
+			return this.ViewState == null
+				? Math.Max(0, baseValue)
 				: baseValue.Clamp(0, this.Source.Dimensions.LayerCount);
 		}
 
 		private static void OnLayerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnLayerChanged((int)e.NewValue);
+			((TiledImageView) d).OnLayerChanged((int) e.NewValue);
 		}
 
 		private void OnLayerChanged(int layer)
@@ -87,7 +115,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static object CoerceZoomLevel(DependencyObject d, object baseValue)
 		{
-			return ((TiledImageView)d).CoerceZoomLevel((double)baseValue);
+			return ((TiledImageView) d).CoerceZoomLevel((double) baseValue);
 		}
 
 		private double CoerceZoomLevel(double baseValue)
@@ -103,7 +131,7 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static object CoerceOffset(DependencyObject d, object basevalue)
 		{
-			return ((TiledImageView)d).CoerceOffset((Vector)basevalue);
+			return ((TiledImageView) d).CoerceOffset((Vector) basevalue);
 		}
 
 		private Vector CoerceOffset(Vector baseValue)
@@ -115,7 +143,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double x;
 			if (this.ViewState.EnvelopSize.Width < this.ActualWidth
-				&& Features.CentralizeImageIfSmallerThanViewport)
+			    && Features.CentralizeImageIfSmallerThanViewport)
 			{
 				x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
 			}
@@ -126,7 +154,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			double y;
 			if (this.ViewState.EnvelopSize.Height < this.ActualHeight
-				&& Features.CentralizeImageIfSmallerThanViewport)
+			    && Features.CentralizeImageIfSmallerThanViewport)
 			{
 				y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
 			}
@@ -140,17 +168,17 @@ namespace Hillinworks.TiledImage.Controls
 
 		private static void OnRotationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnRotationChanged((double)e.NewValue);
+			((TiledImageView) d).OnRotationChanged((double) e.NewValue);
 		}
 
 		private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnZoomLevelChanged((double)e.NewValue);
+			((TiledImageView) d).OnZoomLevelChanged((double) e.NewValue);
 		}
 
 		private static void OnOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			((TiledImageView)d).OnOffsetChanged((Vector)e.NewValue);
+			((TiledImageView) d).OnOffsetChanged((Vector) e.NewValue);
 		}
 
 		private void OnOffsetChanged(Vector offset)
@@ -165,28 +193,28 @@ namespace Hillinworks.TiledImage.Controls
 
 		private void OnRotationChanged(double rotation)
 		{
-			if (this.ViewState != null)
-			{
-				this.ViewState.Rotation = rotation;
-			}
+			this.ViewState?.Rotate(rotation, this.RotateOrigin ?? this.CenterPoint);
+			this.RotateOrigin = null;
 
 			this.UpdateScrollability();
 		}
 
 		private void OnZoomLevelChanged(double zoomLevel)
 		{
-			var focalPoint = this.InputFocalPoint;
-			if (focalPoint.X < 0
-				|| focalPoint.Y < 0
-				|| focalPoint.X > this.ActualWidth
-				|| focalPoint.Y > this.ActualHeight)
+			var origin = this.ZoomOrigin ?? Mouse.GetPosition(this);
+			if (origin.X < 0
+			    || origin.Y < 0
+			    || origin.X > this.ActualWidth
+			    || origin.Y > this.ActualHeight)
 			{
 				// zoom about our center if the focal point is out of bound, this is good for 
 				// host program to implement button/slider based zooming
-				focalPoint = this.CenterPoint;
+				origin = this.CenterPoint;
 			}
 
-			this.ViewState?.Zoom(zoomLevel, focalPoint);
+			this.ZoomOrigin = null;
+
+			this.ViewState?.Zoom(zoomLevel, origin);
 
 			this.UpdateScrollability();
 		}
@@ -194,6 +222,30 @@ namespace Hillinworks.TiledImage.Controls
 		public void SetTransform(Matrix matrix)
 		{
 			this.ViewState?.SetTransform(matrix);
+		}
+
+		public void Centralize()
+		{
+			this.Offset = new Vector(
+				(this.ViewState.EnvelopSize.Width - this.ActualWidth) / 2,
+				(this.ViewState.EnvelopSize.Height - this.ActualHeight) / 2);
+		}
+
+		private void Rotate(double rotation, Point origin)
+		{
+			this.RotateOrigin = origin;
+			this.Rotation = rotation;
+		}
+
+		private void Zoom(double zoomLevel, Point origin)
+		{
+			this.ZoomOrigin = origin;
+			this.ZoomLevel = zoomLevel;
+		}
+
+		private void Translate(Vector translation)
+		{
+			this.Offset = translation;
 		}
 	}
 }

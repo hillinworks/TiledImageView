@@ -22,6 +22,11 @@ namespace Hillinworks.TiledImage.Controls
 				new FrameworkPropertyMetadata(typeof(TiledImageView)));
 		}
 
+		public TiledImageView()
+		{
+			this.IsManipulationEnabled = Features.SupportTouchManipulation;
+		}
+
 		public TiledImageSource Source
 		{
 			get => (TiledImageSource)this.GetValue(SourceProperty);

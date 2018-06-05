@@ -18,6 +18,11 @@
 		/// </summary>
 		public static bool DarkenLoadingTiles { get; } = false;
 
+		/// <summary>
+		/// Whether the tiled image view support touch translation, rotation and scaling.
+		/// </summary>
+		public static bool SupportTouchManipulation { get; } = true;
+
 		#region Debug-only features
 
 #if DEBUG

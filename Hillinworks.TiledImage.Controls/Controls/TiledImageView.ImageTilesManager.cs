@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using Hillinworks.TiledImage.Imaging;
 
 namespace Hillinworks.TiledImage.Controls
@@ -59,7 +60,7 @@ namespace Hillinworks.TiledImage.Controls
 				}
 
 				var focalComparer = new UpdateTileRequest.FocalComparer(
-					this.Owner.ViewState.ViewToWorldMatrix.Transform(this.Owner.InputFocalPoint));
+					this.Owner.ViewState.ViewToWorldMatrix.Transform(Mouse.GetPosition(this.Owner)));
 				updateRequests.Sort(focalComparer);
 
 				var newTiles = new Dictionary<TileIndex.Full, TileRenderInfo>();
@@ -126,7 +127,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			private void OnContentChanged()
 			{
-				this.Owner.Dispatcher.BeginInvoke((Action) this.Owner.InvalidateVisual);
+				this.Owner.Dispatcher.BeginInvoke((Action)this.Owner.InvalidateVisual);
 			}
 
 

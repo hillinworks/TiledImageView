@@ -65,7 +65,7 @@ namespace Hillinworks.TiledImage.Controls
 		{
 			var center = new Point(this.ActualWidth / 2, this.ActualHeight / 2);
 			var delta = Vector.AngleBetween(this.DragStartPosition - center, position - center);
-			this.Rotation = (this.DragStartRotationAngle + delta).PositiveModulo(360);
+			this.Rotate(this.DragStartRotationAngle + delta, this.CenterPoint);
 		}
 	}
 }

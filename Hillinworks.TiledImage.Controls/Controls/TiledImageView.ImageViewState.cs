@@ -63,7 +63,7 @@ namespace Hillinworks.TiledImage.Controls
 			public double Rotation
 			{
 				get => _rotation;
-				set
+				private set
 				{
 					if (this.UpdatingOwner)
 					{
@@ -77,9 +77,7 @@ namespace Hillinworks.TiledImage.Controls
 
 					_rotation = value;
 
-					this.FixViewPointInWorld(this.Owner.CenterPoint, this.UpdateMatrices);
-
-					this.OnTransformChanged();
+					this.UpdateMatrices();
 				}
 			}
 
@@ -140,7 +138,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			public Size ContentSize { get; private set; }
 			public Size EnvelopSize { get; private set; }
-			
+
 			public Matrix EnvelopToWorldMatrix { get; private set; }
 
 			public Matrix WorldToEnvelopMatrix
@@ -184,6 +182,13 @@ namespace Hillinworks.TiledImage.Controls
 			public void Zoom(double zoomLevel, Point origin)
 			{
 				this.FixViewPointInWorld(origin, () => this.ZoomLevel = zoomLevel);
+
+				this.OnTransformChanged();
+			}
+
+			public void Rotate(double rotation, Point origin)
+			{
+				this.FixViewPointInWorld(origin, () => this.Rotation = rotation);
 
 				this.OnTransformChanged();
 			}
@@ -248,6 +253,7 @@ namespace Hillinworks.TiledImage.Controls
 				// todo
 				throw new NotImplementedException();
 			}
+
 		}
 	}
 }
