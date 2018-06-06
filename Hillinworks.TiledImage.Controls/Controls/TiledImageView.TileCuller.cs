@@ -2,8 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Hillinworks.TiledImage.Imaging;
-using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {
@@ -14,13 +14,6 @@ namespace Hillinworks.TiledImage.Controls
 		/// </summary>
 		private class TileCuller
 		{
-			private enum Intersection
-			{
-				Contain,
-				Intersect,
-				NotIntersect
-			}
-
 			public TileCuller(TiledImageView owner, Rect cullRect)
 			{
 				this.Owner = owner;
@@ -212,6 +205,13 @@ namespace Hillinworks.TiledImage.Controls
 				}
 
 				return Intersection.NotIntersect;
+			}
+
+			private enum Intersection
+			{
+				Contain,
+				Intersect,
+				NotIntersect
 			}
 		}
 	}

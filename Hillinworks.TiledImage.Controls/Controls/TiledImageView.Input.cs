@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {
@@ -16,12 +15,7 @@ namespace Hillinworks.TiledImage.Controls
 		/// </summary>
 		private Point? RotateOrigin { get; set; }
 
-		private static bool CheckMouseButtonStates(MouseEventArgs e, bool leftPressed, bool middlePressed, bool rightPressed)
-		{
-			return e.LeftButton == MouseButtonState.Pressed == leftPressed
-				   && e.MiddleButton == MouseButtonState.Pressed == middlePressed
-				   && e.RightButton == MouseButtonState.Pressed == rightPressed;
-		}
+
 
 		protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
 		{
@@ -43,7 +37,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			var mousePosition = e.GetPosition(this);
 
-			if (CheckMouseButtonStates(e, true, false, false))
+			if (e.CheckMouseButtonStates(true, false, false))
 			{
 				if (!this.IsDragging)
 				{
@@ -56,7 +50,7 @@ namespace Hillinworks.TiledImage.Controls
 					e.Handled = true;
 				}
 			}
-			else if (CheckMouseButtonStates(e, false, false, true))
+			else if (e.CheckMouseButtonStates(false, false, true))
 			{
 				if (!this.IsDragging)
 				{

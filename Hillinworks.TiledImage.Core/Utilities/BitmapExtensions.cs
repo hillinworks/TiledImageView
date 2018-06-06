@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using System.Windows.Media.Imaging;
 
-namespace Hillinworks.TiledImage.Utilities
+// ReSharper disable once CheckNamespace
+namespace System.Windows.Media.Imaging
 {
 	public static class BitmapExtensions
 	{

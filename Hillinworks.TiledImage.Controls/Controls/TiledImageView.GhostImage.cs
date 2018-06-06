@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Hillinworks.TiledImage.Properties;
-using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {
 	partial class TiledImageView
 	{
 		/// <summary>
-		/// The ghost tiledImage is an tiledImage captured before any LOD change, scaled and painted as a placeholder
-		/// while the tiles under the new LOD are being loaded. It helps creating a smoother zooming experience.
+		///     The ghost tiledImage is an tiledImage captured before any LOD change, scaled and painted as a placeholder
+		///     while the tiles under the new LOD are being loaded. It helps creating a smoother zooming experience.
 		/// </summary>
 		private ImageSource GhostImage { get; set; }
+
 		private Rect GhostImageWorldRect { get; set; }
-		private	double GhostImageRotation { get; set; }
+		private double GhostImageRotation { get; set; }
 
 		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 		private void CaptureGhostImage()
@@ -36,7 +31,8 @@ namespace Hillinworks.TiledImage.Controls
 				return;
 			}
 
-			var renderTarget = new RenderTargetBitmap((int)this.ActualWidth, (int)this.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+			var renderTarget = new RenderTargetBitmap((int) this.ActualWidth, (int) this.ActualHeight, 96, 96,
+				PixelFormats.Pbgra32);
 			renderTarget.Render(this);
 			renderTarget.Freeze();
 
@@ -68,8 +64,8 @@ namespace Hillinworks.TiledImage.Controls
 			// the ghost image captured is already rotated, we need to cancel that rotation first
 			context.PushTransform(
 				new RotateTransform(
-					-this.GhostImageRotation, 
-					this.GhostImageWorldRect.X, 
+					-this.GhostImageRotation,
+					this.GhostImageWorldRect.X,
 					this.GhostImageWorldRect.Y));
 
 			context.DrawImage(this.GhostImage, this.GhostImageWorldRect);

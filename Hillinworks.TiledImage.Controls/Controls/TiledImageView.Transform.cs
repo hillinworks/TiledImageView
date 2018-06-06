@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Hillinworks.TiledImage.Properties;
-using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {

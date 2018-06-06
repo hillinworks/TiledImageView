@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Hillinworks.TiledImage.Imaging;
-using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Controls
 {

@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿
 
-namespace Hillinworks.TiledImage.Utilities
+// ReSharper disable once CheckNamespace
+namespace System.Windows.Media
 {
 	public static class MatrixExtensions
 	{

@@ -65,10 +65,10 @@
     <Compile Include="Properties\Features.cs" />
     <Compile Include="Utilities\FrameworkElementExtensions.cs" />
     <Compile Include="Utilities\MatrixExtensions.cs" />
+    <Compile Include="Utilities\MouseEventArgsExtensions.cs" />
     <Compile Include="Utilities\PointExtensions.cs" />
     <Compile Include="Utilities\RectEx.cs" />
     <Compile Include="Utilities\RectExtensions.cs" />
-    <Compile Include="Utilities\VectorLikeExtensions.cs" />
     <Page Include="Controls\TiledImageViewDebug.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

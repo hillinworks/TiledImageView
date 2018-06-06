@@ -1,6 +1,6 @@
-﻿using System.Windows;
-
-namespace Hillinworks.TiledImage.Utilities
+﻿
+ // ReSharper disable once CheckNamespace
+namespace System.Windows
 {
 	public static class RectEx
 	{

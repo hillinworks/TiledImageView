@@ -1,6 +1,5 @@
-﻿using System;
-
-namespace Hillinworks.TiledImage.Utilities
+﻿// ReSharper disable once CheckNamespace
+namespace System
 {
 	public static class MathExtensions
 	{
