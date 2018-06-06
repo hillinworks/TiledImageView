@@ -191,15 +191,11 @@ namespace Hillinworks.TiledImage.Controls
 			public void Zoom(double zoomLevel, Point origin)
 			{
 				this.FixViewPointInWorld(origin, () => this.ZoomLevel = zoomLevel);
-
-				this.OnTransformChanged();
 			}
 
 			public void Rotate(double rotation, Point origin)
 			{
 				this.FixViewPointInWorld(origin, () => this.Rotation = rotation);
-
-				this.OnTransformChanged();
 			}
 
 			private void OnTransformChanged()
@@ -218,7 +214,7 @@ namespace Hillinworks.TiledImage.Controls
 
 				var matrix = Matrix.Identity;
 				matrix.RotateAt(
-					-this.Rotation,
+					this.Rotation,
 					this.ContentSize.Width / 2 + horizontalMargin,
 					this.ContentSize.Height / 2 + verticalMargin);
 
@@ -236,7 +232,11 @@ namespace Hillinworks.TiledImage.Controls
 				// first scale world space to content space
 				matrix.Scale(1 / this.ViewToWorldScale, 1 / this.ViewToWorldScale);
 				// rotate about the center of the content
-				matrix.RotateAt(this.Rotation, this.ContentSize.Width / 2, this.ContentSize.Height / 2);
+				matrix.RotateAt(
+					this.Rotation,
+					this.ContentSize.Width / 2 + horizontalMargin,
+					this.ContentSize.Height / 2 + verticalMargin);
+				;
 				// zero envelop coordinates
 				matrix.Translate(-envelopLeft, -envelopTop);
 
@@ -257,7 +257,7 @@ namespace Hillinworks.TiledImage.Controls
 
 			private int CalculateLODLevel(double zoomLevel)
 			{
-				return ((int) Math.Floor(Math.Log(this.TiledImage.LOD.MaxZoomLevel / zoomLevel, 2)))
+				return ((int)Math.Floor(Math.Log(this.TiledImage.LOD.MaxZoomLevel / zoomLevel, 2)))
 					.Clamp(0, this.TiledImage.LOD.MaxLODLevel);
 			}
 
