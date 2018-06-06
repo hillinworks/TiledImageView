@@ -78,7 +78,8 @@ namespace Hillinworks.TiledImage.Controls
 				&& e.RightButton != MouseButtonState.Pressed
 				&& e.MiddleButton != MouseButtonState.Pressed)
 			{
-				this.Zoom(this.ZoomLevel * (1.0 + e.Delta / 1200.0), e.GetPosition(this));
+				var delta = e.Delta > 0 ? 1.0 + e.Delta / 1200.0 : 1 / (1.0 - e.Delta / 1200.0);
+				this.Zoom(this.ZoomLevel * delta, e.GetPosition(this));
 			}
 		}
 
