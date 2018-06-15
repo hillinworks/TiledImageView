@@ -2,12 +2,6 @@
 {
 	public partial struct TileIndex
 	{
-		internal static string GetAlphabetRow(int row)
-		{
-			return ((char) ('A' + row)).ToString();
-		}
-
-		public string AlphabetRow => GetAlphabetRow(this.Row);
 		public int Row { get; }
 		public int Column { get; }
 
@@ -34,7 +28,7 @@
 
 		public override string ToString()
 		{
-			return $"({this.AlphabetRow}{this.Column})";
+			return $"({this.Row}-{this.Column})";
 		}
 	}
 }

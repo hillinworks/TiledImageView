@@ -11,7 +11,6 @@ namespace Hillinworks.TiledImage.Imaging
 				return new TileIndex(index.Column, index.Row);
 			}
 
-			public string AlphabetRow => GetAlphabetRow(this.Row);
 			public int Row { get; }
 			public int Column { get; }
 			public int LODLevel { get; }
@@ -45,7 +44,7 @@ namespace Hillinworks.TiledImage.Imaging
 
 			public override string ToString()
 			{
-				return $"({this.AlphabetRow}{this.Column} @ LOD{this.LODLevel})";
+				return $"({this.Row}-{this.Column} @ LOD{this.LODLevel})";
 			}
 		}
 	}
