@@ -7,264 +7,258 @@ using Hillinworks.TiledImage.Imaging;
 
 namespace Hillinworks.TiledImage.Controls
 {
-	partial class TiledImageView
-	{
-		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-		internal sealed class ImageViewState
-		{
-			private Size _envelopSize;
-			private int _layer;
-			private Vector _offset;
-			private double _rotation;
-			private Matrix _worldToEnvelopMatrix;
-			private Matrix _worldToViewMatrix;
-			private double _zoomLevel;
+    partial class TiledImageView
+    {
+        [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+        internal sealed class ImageViewState
+        {
+            private Size _envelopSize;
+            private int _layer;
+            private Vector _offset;
+            private double _rotation;
+            private Matrix _worldToEnvelopMatrix;
+            private Matrix _worldToViewMatrix;
+            private double _zoomLevel;
 
-			public ImageViewState(TiledImageView owner)
-			{
-				this.Owner = owner;
-			}
+            public ImageViewState(TiledImageView owner)
+            {
+                this.Owner = owner;
+            }
 
-			public TiledImageView Owner { get; }
-			public TiledImageSource TiledImage => this.Owner.Source;
-			public int LODLevel { get; private set; } = -1;
-			public Dimensions LODDimensions { get; private set; }
+            private TiledImageView Owner { get; }
+            private TiledImageSource TiledImage => this.Owner.Source;
+            public int LODLevel { get; private set; } = -1;
+            public Dimensions LODDimensions { get; private set; }
 
-			public double LODToWorldScale { get; private set; }
-			public double ViewToWorldScale { get; private set; }
-			public double ViewToLODScale { get; private set; }
+            public double LODToWorldScale { get; private set; }
+            public double ViewToWorldScale { get; private set; }
+            public double ViewToLODScale { get; private set; }
 
-			public int Layer
-			{
-				get => _layer;
-				set
-				{
-					if (_layer == value)
-					{
-						return;
-					}
+            public int Layer
+            {
+                get => _layer;
+                set
+                {
+                    if (_layer == value)
+                    {
+                        return;
+                    }
 
-					_layer = value;
-					this.Owner.TilesManager.UpdateLayer(_layer);
-				}
-			}
+                    _layer = value;
+                    this.Owner.TilesManager.UpdateLayer(_layer);
+                }
+            }
 
-			public double Rotation
-			{
-				get => _rotation;
-				private set
-				{
-					if (this.UpdatingOwner)
-					{
-						return;
-					}
+            public double Rotation
+            {
+                get => _rotation;
+                private set
+                {
+                    if (this.UpdatingOwner)
+                    {
+                        return;
+                    }
 
-					if (_rotation == value)
-					{
-						return;
-					}
+                    if (_rotation == value)
+                    {
+                        return;
+                    }
 
-					_rotation = value;
+                    _rotation = value;
 
-					this.UpdateMatrices();
-				}
-			}
+                    this.UpdateMatrices();
+                }
+            }
 
-			public double ZoomLevel
-			{
-				get => _zoomLevel;
-				private set
-				{
-					if (this.UpdatingOwner)
-					{
-						return;
-					}
+            public double ZoomLevel
+            {
+                get => _zoomLevel;
+                private set
+                {
+                    if (this.UpdatingOwner)
+                    {
+                        return;
+                    }
 
-					if (_zoomLevel == value)
-					{
-						return;
-					}
-					_zoomLevel = value;
+                    if (_zoomLevel == value)
+                    {
+                        return;
+                    }
+                    _zoomLevel = value;
 
-					var newLODLevel = this.CalculateLODLevel(_zoomLevel);
-					if (newLODLevel != this.LODLevel)
-					{
-						this.SetLODLevel(newLODLevel);
-					}
+                    var newLODLevel = this.TiledImage.LOD.CalculateLODLevel(_zoomLevel);
+                    if (newLODLevel != this.LODLevel)
+                    {
+                        this.SetLODLevel(newLODLevel);
+                    }
 
-					this.ViewToWorldScale = this.TiledImage.LOD.MaxZoomLevel / _zoomLevel;
-					this.ViewToLODScale = this.ViewToWorldScale / this.LODToWorldScale;
+                    this.ViewToWorldScale = this.TiledImage.LOD.MaxZoomLevel / _zoomLevel;
+                    this.ViewToLODScale = this.ViewToWorldScale / this.LODToWorldScale;
 
-					this.UpdateMatrices();
-				}
-			}
+                    this.UpdateMatrices();
+                }
+            }
 
+            /// <summary>
+            /// Current view offset, in view coordinate
+            /// </summary>
 			public Vector Offset
-			{
-				get => _offset;
-				set
-				{
-					if (this.UpdatingOwner)
-					{
-						return;
-					}
+            {
+                get => _offset;
+                set
+                {
+                    if (this.UpdatingOwner)
+                    {
+                        return;
+                    }
 
-					if (_offset == value)
-					{
-						return;
-					}
+                    if (_offset == value)
+                    {
+                        return;
+                    }
 
-					_offset = value;
+                    _offset = value;
 
-					var matrix = this.WorldToEnvelopMatrix;
-					matrix.Translate(-this.Offset.X, -this.Offset.Y);
-					this.WorldToViewMatrix = matrix;
+                    var matrix = this.WorldToEnvelopMatrix;
+                    matrix.Translate(-this.Offset.X, -this.Offset.Y);
+                    this.WorldToViewMatrix = matrix;
 
-					this.OnTransformChanged();
-				}
-			}
+                    this.OnTransformChanged();
+                }
+            }
 
-			public Size ContentSize { get; private set; }
+            public Size ContentSize { get; private set; }
 
-			public Size EnvelopSize
-			{
-				get => _envelopSize;
-				private set
-				{
-					_envelopSize = value;
-					this.Owner.ExtentSize = _envelopSize;
-				}
-			}
+            public Size EnvelopSize
+            {
+                get => _envelopSize;
+                private set
+                {
+                    _envelopSize = value;
+                    this.Owner.ExtentSize = _envelopSize;
+                }
+            }
 
-			public Matrix EnvelopToWorldMatrix { get; private set; }
+            public Matrix EnvelopToWorldMatrix { get; private set; }
 
-			public Matrix WorldToEnvelopMatrix
-			{
-				get => _worldToEnvelopMatrix;
-				private set
-				{
-					_worldToEnvelopMatrix = value;
-					this.EnvelopToWorldMatrix = _worldToEnvelopMatrix.GetInverse();
-				}
-			}
+            public Matrix WorldToEnvelopMatrix
+            {
+                get => _worldToEnvelopMatrix;
+                private set
+                {
+                    _worldToEnvelopMatrix = value;
+                    this.EnvelopToWorldMatrix = _worldToEnvelopMatrix.GetInverse();
+                }
+            }
 
-			public Matrix ViewToWorldMatrix { get; private set; }
+            public Matrix ViewToWorldMatrix { get; private set; }
 
-			public Matrix WorldToViewMatrix
-			{
-				get => _worldToViewMatrix;
-				private set
-				{
-					_worldToViewMatrix = value;
-					this.ViewToWorldMatrix = _worldToViewMatrix.GetInverse();
-				}
-			}
+            public Matrix WorldToViewMatrix
+            {
+                get => _worldToViewMatrix;
+                private set
+                {
+                    _worldToViewMatrix = value;
+                    this.ViewToWorldMatrix = _worldToViewMatrix.GetInverse();
+                }
+            }
 
-			private bool UpdatingOwner { get; set; }
+            private bool UpdatingOwner { get; set; }
 
-			public void Initialize()
-			{
-				this.Zoom(this.TiledImage.LOD.InitialZoomLevel, new Point());
+            public void Initialize()
+            {
+                this.Zoom(this.TiledImage.LOD.InitialZoomLevel, new Point());
 
-				this.UpdatingOwner = true;
-				this.Owner.ZoomLevel = this.ZoomLevel;
-				this.Owner.Offset = this.Offset;
-				this.Owner.Rotation = this.Rotation;
-				this.UpdatingOwner = false;
-			}
+                this.UpdatingOwner = true;
+                this.Owner.ZoomLevel = this.ZoomLevel;
+                this.Owner.Offset = this.Offset;
+                this.Owner.Rotation = this.Rotation;
 
-			/// <summary>
-			///     Perform the specified action while keeping the relationship between the specified point in view space
-			///     and its corresponded point in world space unchanged.
-			/// </summary>
-			private void FixViewPointInWorld(Point pointInView, Action action)
-			{
-				var pointInWorldSpace = this.ViewToWorldMatrix.Transform(pointInView);
+                this.Layer = this.TiledImage.Dimensions.MinimumLayerIndex;
+                this.Owner.Layer = this.Layer;
+                this.UpdatingOwner = false;
+            }
 
-				action();
+            /// <summary>
+            ///     Perform the specified action while keeping the relationship between the specified point in view space
+            ///     and its corresponded point in world space unchanged.
+            /// </summary>
+            private void FixViewPointInWorld(Point pointInView, Action action)
+            {
+                var pointInWorldSpace = this.ViewToWorldMatrix.Transform(pointInView);
 
-				var pointInEnvelopSpace = this.WorldToEnvelopMatrix.Transform(pointInWorldSpace);
-				this.Owner.Offset = pointInEnvelopSpace - pointInView;
-			}
+                action();
 
-			public void Zoom(double zoomLevel, Point origin)
-			{
-				this.FixViewPointInWorld(origin, () => this.ZoomLevel = zoomLevel);
-			}
+                var pointInEnvelopSpace = this.WorldToEnvelopMatrix.Transform(pointInWorldSpace);
+                this.Owner.Offset = pointInEnvelopSpace - pointInView;
+            }
 
-			public void Rotate(double rotation, Point origin)
-			{
-				this.FixViewPointInWorld(origin, () => this.Rotation = rotation);
-			}
+            public void Zoom(double zoomLevel, Point origin)
+            {
+                this.FixViewPointInWorld(origin, () => this.ZoomLevel = zoomLevel);
+            }
 
-			private void OnTransformChanged()
-			{
-				this.Owner.TilesManager.UpdateTiles();
-			}
+            public void Rotate(double rotation, Point origin)
+            {
+                this.FixViewPointInWorld(origin, () => this.Rotation = rotation);
+            }
 
-			private void UpdateMatrices()
-			{
-				this.ContentSize = new Size(
-					this.LODDimensions.ContentWidth / this.ViewToLODScale,
-					this.LODDimensions.ContentHeight / this.ViewToLODScale);
+            private void OnTransformChanged()
+            {
+                this.Owner.TilesManager.UpdateTiles();
+            }
 
-				var horizontalMargin = this.LODDimensions.HorizontalMargin / this.ViewToLODScale;
-				var verticalMargin = this.LODDimensions.VerticalMargin / this.ViewToLODScale;
+            private void UpdateMatrices()
+            {
+                this.ContentSize = new Size(
+                    this.LODDimensions.ContentWidth / this.ViewToLODScale,
+                    this.LODDimensions.ContentHeight / this.ViewToLODScale);
 
-				var matrix = Matrix.Identity;
-				matrix.RotateAt(
-					this.Rotation,
-					this.ContentSize.Width / 2 + horizontalMargin,
-					this.ContentSize.Height / 2 + verticalMargin);
+                var horizontalMargin = this.LODDimensions.HorizontalMargin / this.ViewToLODScale;
+                var verticalMargin = this.LODDimensions.VerticalMargin / this.ViewToLODScale;
 
-				var envelopBoundaryVertices = matrix.TransformVertices(
-					new Rect(new Point(horizontalMargin, verticalMargin), this.ContentSize));
+                var matrix = Matrix.Identity;
+                matrix.RotateAt(
+                    this.Rotation,
+                    this.ContentSize.Width / 2 + horizontalMargin,
+                    this.ContentSize.Height / 2 + verticalMargin);
 
-				var envelopLeft = envelopBoundaryVertices.Min(v => v.X);
-				var envelopRight = envelopBoundaryVertices.Max(v => v.X);
-				var envelopTop = envelopBoundaryVertices.Min(v => v.Y);
-				var envelopBottom = envelopBoundaryVertices.Max(v => v.Y);
-				this.EnvelopSize = new Size(envelopRight - envelopLeft, envelopBottom - envelopTop);
+                var envelopBoundaryVertices = matrix.TransformVertices(
+                    new Rect(new Point(horizontalMargin, verticalMargin), this.ContentSize));
 
-				matrix = Matrix.Identity;
+                var envelopLeft = envelopBoundaryVertices.Min(v => v.X);
+                var envelopRight = envelopBoundaryVertices.Max(v => v.X);
+                var envelopTop = envelopBoundaryVertices.Min(v => v.Y);
+                var envelopBottom = envelopBoundaryVertices.Max(v => v.Y);
+                this.EnvelopSize = new Size(envelopRight - envelopLeft, envelopBottom - envelopTop);
 
-				// first scale world space to content space
-				matrix.Scale(1 / this.ViewToWorldScale, 1 / this.ViewToWorldScale);
-				// rotate about the center of the content
-				matrix.RotateAt(
-					this.Rotation,
-					this.ContentSize.Width / 2 + horizontalMargin,
-					this.ContentSize.Height / 2 + verticalMargin);
-				;
-				// zero envelop coordinates
-				matrix.Translate(-envelopLeft, -envelopTop);
+                matrix = Matrix.Identity;
 
-				this.WorldToEnvelopMatrix = matrix;
+                // first scale world space to content space
+                matrix.Scale(1 / this.ViewToWorldScale, 1 / this.ViewToWorldScale);
+                // rotate about the center of the content
+                matrix.RotateAt(
+                    this.Rotation,
+                    this.ContentSize.Width / 2 + horizontalMargin,
+                    this.ContentSize.Height / 2 + verticalMargin);
+                ;
+                // zero envelop coordinates
+                matrix.Translate(-envelopLeft, -envelopTop);
 
-				matrix.Translate(-this.Offset.X, -this.Offset.Y);
+                this.WorldToEnvelopMatrix = matrix;
 
-				this.WorldToViewMatrix = matrix;
-			}
+                matrix.Translate(-this.Offset.X, -this.Offset.Y);
 
-			private void SetLODLevel(int lodLevel)
-			{
-				this.Owner.CaptureGhostImage();
-				this.LODLevel = lodLevel;
-				this.LODDimensions = this.TiledImage.Dimensions.AtLODLevel(this.LODLevel);
-				this.LODToWorldScale = Math.Pow(2, this.LODLevel);
-			}
+                this.WorldToViewMatrix = matrix;
+            }
 
-			private int CalculateLODLevel(double zoomLevel)
-			{
-				return ((int)Math.Floor(Math.Log(this.TiledImage.LOD.MaxZoomLevel / zoomLevel, 2)))
-					.Clamp(0, this.TiledImage.LOD.MaxLODLevel);
-			}
-
-			public void SetTransform(Matrix matrix)
-			{
-				// todo
-				throw new NotImplementedException();
-			}
-		}
-	}
+            private void SetLODLevel(int lodLevel)
+            {
+                this.Owner.CaptureGhostImage();
+                this.LODLevel = lodLevel;
+                this.LODDimensions = this.TiledImage.Dimensions.AtLODLevel(this.LODLevel);
+                this.LODToWorldScale = Math.Pow(2, this.LODLevel);
+            }
+        }
+    }
 }

@@ -52,9 +52,9 @@ namespace Hillinworks.TiledImage.Controls
 
 		// ViewState and TilesManager are tightly couped all along with this control together
 		// They are only not null if Source is not null
-		internal ImageViewState ViewState { get; set; }
+		internal ImageViewState ViewState { get; private set; }
 
-		internal ImageTilesManager TilesManager { get; set; }
+		internal ImageTilesManager TilesManager { get; private set; }
 
 		private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -73,7 +73,6 @@ namespace Hillinworks.TiledImage.Controls
 				this.ViewState = new ImageViewState(this);
 				this.TilesManager = new ImageTilesManager(this);
 				this.ViewState.Initialize();
-
 				this.Zoom(image.LOD.InitialZoomLevel, this.CenterPoint);
 				this.Centralize();
 			}

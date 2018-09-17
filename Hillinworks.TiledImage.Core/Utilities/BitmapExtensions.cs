@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace System.Windows.Media.Imaging
 {
-	public static class BitmapExtensions
+	internal static class BitmapExtensions
 	{
 		public static void SaveAsPng(this BitmapSource bitmap, string path)
 		{

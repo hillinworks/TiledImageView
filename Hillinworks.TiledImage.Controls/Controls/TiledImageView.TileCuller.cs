@@ -37,7 +37,7 @@ namespace Hillinworks.TiledImage.Controls
 			}
 
 			[SuppressMessage("ReSharper", "TailRecursiveCall")]
-			private void CullRecursive(Int32Rect indexRegion, List<TileIndex> tiles)
+			private void CullRecursive(Int32Rect indexRegion, ICollection<TileIndex> tiles)
 			{
 				var tileWidth = this.ViewState.LODDimensions.TileWidth * this.ViewState.LODToWorldScale;
 				var tileHeight = this.ViewState.LODDimensions.TileHeight * this.ViewState.LODToWorldScale;
@@ -59,6 +59,7 @@ namespace Hillinworks.TiledImage.Controls
 							}
 						}
 						return;
+
 					case Intersection.Intersect:
 						var halfWidth1 = indexRegion.Width / 2;
 						var halfWidth2 = indexRegion.Width - halfWidth1;

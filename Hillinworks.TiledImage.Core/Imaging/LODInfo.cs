@@ -1,4 +1,6 @@
-﻿namespace Hillinworks.TiledImage.Imaging
+﻿using System;
+
+namespace Hillinworks.TiledImage.Imaging
 {
 	public struct LODInfo
 	{
@@ -21,26 +23,32 @@
 			if (this.MinLODLevel > this.MaxLODLevel)
 			{
 				throw new InvalidLODInfoException(
-					$"{nameof(MinLODLevel)} must be smaller than or equal to {nameof(MaxLODLevel)}");
+					$"{nameof(this.MinLODLevel)} must be smaller than or equal to {nameof(this.MaxLODLevel)}");
 			}
 
 			if (this.InitialZoomLevel <= 0)
 			{
 				throw new InvalidLODInfoException(
-					$"{nameof(InitialZoomLevel)} must be greater than zero");
+					$"{nameof(this.InitialZoomLevel)} must be greater than zero");
 			}
 
 			if (this.MaxZoomLevel <= 0)
 			{
 				throw new InvalidLODInfoException(
-					$"{nameof(MaxZoomLevel)} must be greater than zero");
+					$"{nameof(this.MaxZoomLevel)} must be greater than zero");
 			}
 
 			if (this.InitialZoomLevel > this.MaxZoomLevel)
 			{
 				throw new InvalidLODInfoException(
-					$"{nameof(InitialZoomLevel)} must be smaller than or equal to {nameof(MaxZoomLevel)}");
+					$"{nameof(this.InitialZoomLevel)} must be smaller than or equal to {nameof(this.MaxZoomLevel)}");
 			}
 		}
+
+	    public int CalculateLODLevel(double zoomLevel)
+	    {
+	        return ((int)Math.Floor(Math.Log(this.MaxZoomLevel / zoomLevel, 2)))
+	            .Clamp(0, this.MaxLODLevel);
+        }
 	}
 }

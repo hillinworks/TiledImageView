@@ -29,10 +29,13 @@ namespace Hillinworks.TiledImage.Imaging
 		/// </summary>
 		public int LayerCount { get; }
 
-		/// <summary>
-		///     Width of left and right margin (blank space before and after content) in pixels
-		/// </summary>
-		public int HorizontalMargin { get; }
+	    public int MinimumLayerIndex => this.LayerCount == 1 ?  1 : 0;
+	    public int MaximumLayerIndex => this.LayerCount - 1;
+
+        /// <summary>
+        ///     Width of left and right margin (blank space before and after content) in pixels
+        /// </summary>
+        public int HorizontalMargin { get; }
 
 		/// <summary>
 		///     Height of left and right margin (white space before and after content) in pixels
