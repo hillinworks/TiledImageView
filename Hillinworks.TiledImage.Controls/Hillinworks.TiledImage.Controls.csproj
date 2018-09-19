@@ -32,8 +32,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="slf4net, Version=0.1.32.1, Culture=neutral, PublicKeyToken=592edb3b6b36b5ba, processorArchitecture=MSIL">
+      <HintPath>..\..\..\tronmedi\Tromedi.Production\packages\slf4net.0.1.32.1\lib\net35\slf4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -48,6 +52,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\CullerBase.cs" />
+    <Compile Include="Controls\CullerBase.CullContext.cs" />
+    <Compile Include="Controls\CullerBase.Intersection.cs" />
+    <Compile Include="Controls\Overlays\OverlayCuller.cs" />
+    <Compile Include="Controls\Overlays\OverlayCuller.QuadTreeCuller.cs" />
+    <Compile Include="Controls\Overlays\OverlayCuller.QuadTreeItem.cs" />
+    <Compile Include="Controls\Overlays\IOverlay.cs" />
     <Compile Include="Controls\TiledImageView.Commands.cs" />
     <Compile Include="Controls\TiledImageView.GhostImage.cs" />
     <Compile Include="Controls\TiledImageView.TileCuller.cs" />
@@ -97,12 +108,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\tronmedi\Tromedi.Production\Tronmedi.Collections\Tronmedi.Collections.csproj">
+      <Project>{5A955E5B-D3D6-4B17-8D61-8D6E6771E4A1}</Project>
+      <Name>Tronmedi.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hillinworks.TiledImage.Core\Hillinworks.TiledImage.Core.csproj">
       <Project>{b791d5c7-8fdb-4b7f-afc1-3531b56b0c4c}</Project>
       <Name>Hillinworks.TiledImage.Core</Name>

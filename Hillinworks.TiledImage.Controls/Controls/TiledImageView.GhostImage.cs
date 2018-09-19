@@ -19,7 +19,7 @@ namespace Hillinworks.TiledImage.Controls
 		private double GhostImageRotation { get; set; }
 
 		[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
-		private void CaptureGhostImage()
+		internal void CaptureGhostImage()
 		{
 			if (DesignerProperties.GetIsInDesignMode(this))
 			{

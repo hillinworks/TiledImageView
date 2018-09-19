@@ -28,7 +28,7 @@
 
 		public override string ToString()
 		{
-			return $"({this.Row}-{this.Column})";
+			return $"({this.Column}, {this.Row})";
 		}
 	}
 }

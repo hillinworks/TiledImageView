@@ -189,6 +189,7 @@ namespace Hillinworks.TiledImage.Controls
             if (this.ViewState != null)
             {
                 this.ViewState.Offset = offset;
+                this.OnViewStateChanged();
             }
 
             this.InvalidateScrollInfo();
@@ -196,7 +197,12 @@ namespace Hillinworks.TiledImage.Controls
 
         private void OnRotationChanged(double rotation)
         {
-            this.ViewState?.Rotate(rotation, this.RotateOrigin ?? this.CenterPoint);
+            if (this.ViewState != null)
+            {
+                this.ViewState.Rotate(rotation, this.RotateOrigin ?? this.CenterPoint);
+                this.OnViewStateChanged();
+            }
+
             this.RotateOrigin = null;
 
             this.UpdateScrollability();
@@ -217,7 +223,11 @@ namespace Hillinworks.TiledImage.Controls
 
             this.ZoomOrigin = null;
 
-            this.ViewState?.Zoom(zoomLevel, origin);
+            if (this.ViewState != null)
+            {
+                this.ViewState.Zoom(zoomLevel, origin);
+                this.OnViewStateChanged();
+            }
 
             this.UpdateScrollability();
         }

@@ -7,5 +7,16 @@ namespace System.Windows
 		{
 			return new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 		}
+
+	    public static Point[] GetVertices(this Rect rect)
+	    {
+	        return new Point[]
+	        {
+	            rect.TopLeft,
+	            rect.TopRight,
+	            rect.BottomRight,
+	            rect.BottomLeft
+	        };
+	    }
 	}
 }
