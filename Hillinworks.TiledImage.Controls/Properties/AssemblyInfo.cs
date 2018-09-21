@@ -24,3 +24,4 @@ using System.Windows.Markup;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: XmlnsDefinition("http://schemas.hillinworks.com/tiled-image", "Hillinworks.TiledImage.Controls")]
+[assembly: XmlnsDefinition("http://schemas.hillinworks.com/tiled-image", "Hillinworks.TiledImage.Controls.Overlays")]

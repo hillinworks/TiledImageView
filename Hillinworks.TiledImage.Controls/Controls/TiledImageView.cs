@@ -85,6 +85,10 @@ namespace Hillinworks.TiledImage.Controls
             var addedOverlays = oldValue == null ? newValue : newValue.Except(oldValue);
             foreach (var overlay in addedOverlays)
             {
+                if (overlay is OverlayUserControl control)
+                {
+                    control.ImageView = this;
+                }
                 overlay.OnLayerChanged(this.Layer);
                 overlay.OnViewStateChanged(this.ViewState);
             }

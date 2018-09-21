@@ -42,12 +42,14 @@ namespace Hillinworks.TiledImage.Controls.Overlays
 
             public IEnumerable<T> Cull(ImageViewState viewState)
             {
-                var cullRect = new Rect(0, 0, viewState.ViewportWidth, viewState.ViewportHeight);
-                var cullContext = new CullContext(cullRect, viewState);
-
                 var elements = new List<T>();
 
-                CullRecursive(elements, cullContext, this.QuadTree.RootNode);
+                if (this.QuadTree.RootNode != null)
+                {
+                    var cullRect = new Rect(0, 0, viewState.ViewportWidth, viewState.ViewportHeight);
+                    var cullContext = new CullContext(cullRect, viewState);
+                    CullRecursive(elements, cullContext, this.QuadTree.RootNode);
+                }
 
                 return elements;
             }

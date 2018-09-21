@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿
+
+using System.Drawing;
 
 namespace Hillinworks.TiledImage.Controls.Overlays
 {
