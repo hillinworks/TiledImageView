@@ -30,7 +30,7 @@ namespace Hillinworks.TiledImage.Imaging
 		public int LayerCount { get; }
 
 	    public int MinimumLayerIndex => this.LayerCount == 1 ?  1 : 0;
-	    public int MaximumLayerIndex => this.LayerCount - 1;
+	    public int MaximumLayerIndex => this.LayerCount;
 
         /// <summary>
         ///     Width of left and right margin (blank space before and after content) in pixels
