@@ -22,9 +22,16 @@ namespace Hillinworks.TiledImage.Imaging
             }
         }
 
-        public static async Task<BitmapSource> Clip(this TiledImageSource imageSource, Int32Rect bounds, int layer, int lodLevel)
+        public static async Task<BitmapSource> ClipAsync(
+			this TiledImageSource imageSource, 
+			Int32Rect bounds, 
+			int? layer = null, 
+			int? lodLevel = null)
         {
-            var dimensions = imageSource.Dimensions.AtLODLevel(lodLevel);
+	        var finalLayer = layer ?? imageSource.Dimensions.MinimumLayerIndex;
+	        var finalLodLevel = lodLevel ?? imageSource.LOD.MaxLODLevel;
+
+			var dimensions = imageSource.Dimensions.AtLODLevel(finalLodLevel);
 
             var tileWidth = dimensions.TileWidth;
             var tileHeight = dimensions.TileHeight;
@@ -48,7 +55,7 @@ namespace Hillinworks.TiledImage.Imaging
                     var tileLeft = column * tileWidth;
                     var tileRight = (column + 1) * tileWidth;
 
-                    var index = new TileIndex.Full(column, row, layer, lodLevel);
+                    var index = new TileIndex.Full(column, row, finalLayer, finalLodLevel);
                     var tileImage = await imageSource.LoadTileAsync(index);
 
                     var copyMetricsX = ImageCopyMetrics.Calculate(tileLeft, tileRight, bounds.X, bounds.Height);
