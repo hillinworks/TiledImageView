@@ -10,7 +10,7 @@ using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Imaging
 {
-    public static class Clipper
+    public static partial class Clipper
     {
         private static unsafe void ClearBackBuffer(this WriteableBitmap bitmap)
         {
@@ -23,15 +23,15 @@ namespace Hillinworks.TiledImage.Imaging
         }
 
         public static async Task<BitmapSource> ClipAsync(
-			this TiledImageSource imageSource, 
-			Int32Rect bounds, 
-			int? layer = null, 
-			int? lodLevel = null)
+            this TiledImageSource imageSource,
+            Int32Rect bounds,
+            int? layer = null,
+            int? lodLevel = null)
         {
-	        var finalLayer = layer ?? imageSource.Dimensions.MinimumLayerIndex;
-	        var finalLodLevel = lodLevel ?? imageSource.LOD.MaxLODLevel;
+            var finalLayer = layer ?? imageSource.Dimensions.MinimumLayerIndex;
+            var finalLodLevel = lodLevel ?? imageSource.LOD.MinLODLevel;
 
-			var dimensions = imageSource.Dimensions.AtLODLevel(finalLodLevel);
+            var dimensions = imageSource.Dimensions.AtLODLevel(finalLodLevel);
 
             var tileWidth = dimensions.TileWidth;
             var tileHeight = dimensions.TileHeight;
@@ -40,8 +40,7 @@ namespace Hillinworks.TiledImage.Imaging
             var tileIndexRight = (bounds.X + bounds.Width - 1) / tileWidth;
             var tileIndexBottom = (bounds.Y + bounds.Height - 1) / tileHeight;
 
-            var image = new WriteableBitmap(bounds.Width, bounds.Height, 96, 96, PixelFormats.Bgr24, null);
-            image.ClearBackBuffer();
+            var copyPixelRequests = new List<CopyPixelRequest>();
 
             for (var row = tileIndexTop; row <= tileIndexBottom; ++row)
             {
@@ -72,12 +71,21 @@ namespace Hillinworks.TiledImage.Imaging
                         copyMetricsX.Size,
                         copyMetricsY.Size);
 
-                    tileImage.CopyPixels(
-                        sourceRect,
-                        image.BackBuffer + destinationRect.Y * image.BackBufferStride + destinationRect.X * 3,
-                        image.PixelHeight * image.BackBufferStride,
-                        image.BackBufferStride);
+                    copyPixelRequests.Add(new CopyPixelRequest(tileImage, sourceRect, destinationRect));
                 }
+            }
+
+            var image = new WriteableBitmap(bounds.Width, bounds.Height, 96, 96, PixelFormats.Bgr24, null);
+            image.ClearBackBuffer();
+
+            foreach (var request in copyPixelRequests)
+            {
+                request.TileImage.CopyPixels(
+                    request.SourceRect,
+                    image.BackBuffer + request.DestinationRect.Y * image.BackBufferStride +
+                    request.DestinationRect.X * 3,
+                    image.PixelHeight * image.BackBufferStride,
+                    image.BackBufferStride);
             }
 
             image.Freeze();

@@ -36,12 +36,12 @@ namespace Hillinworks.TiledImage.Controls
 		double IScrollInfo.HorizontalOffset =>
 			this.ViewState == null
 				? 0.0
-				: this.Offset.X.PositiveModulo(this.ViewState.EnvelopSize.Width);
+				: this.Offset.X.PositiveModulo(this.ViewState.EnvelopRect.Width);
 
 		double IScrollInfo.VerticalOffset =>
 			this.ViewState == null
 				? 0.0
-				: this.Offset.Y.PositiveModulo(this.ViewState.EnvelopSize.Height);
+				: this.Offset.Y.PositiveModulo(this.ViewState.EnvelopRect.Height);
 
 		ScrollViewer IScrollInfo.ScrollOwner
 		{
@@ -126,8 +126,10 @@ namespace Hillinworks.TiledImage.Controls
 
 		private void UpdateScrollability()
 		{
-			this.CanHorizontallyScroll = this.ViewState != null && this.ActualWidth < this.ViewState.EnvelopSize.Width;
-			this.CanVerticallyScroll = this.ViewState != null && this.ActualHeight < this.ViewState.EnvelopSize.Height;
+			this.CanHorizontallyScroll = this.ViewState != null 
+			                             && this.ActualWidth < this.ViewState.EnvelopRect.Width;
+			this.CanVerticallyScroll = this.ViewState != null
+			                           && this.ActualHeight < this.ViewState.EnvelopRect.Height;
 			this.InvalidateScrollInfo();
 		}
 

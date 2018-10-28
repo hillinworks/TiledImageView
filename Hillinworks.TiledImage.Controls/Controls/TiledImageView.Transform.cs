@@ -145,25 +145,25 @@ namespace Hillinworks.TiledImage.Controls
             }
 
             double x;
-            if (this.ViewState.EnvelopSize.Width < this.ActualWidth
+            if (this.ViewState.EnvelopRect.Width < this.ActualWidth
                 && Features.CentralizeImageIfSmallerThanViewport)
             {
-                x = -(this.ActualWidth - this.ViewState.EnvelopSize.Width) / 2;
+                x = -(this.ActualWidth - this.ViewState.EnvelopRect.Width) / 2;
             }
             else
             {
-                x = baseValue.X.Clamp(0, this.ViewState.EnvelopSize.Width - this.ActualWidth);
+                x = baseValue.X.Clamp(0, this.ViewState.EnvelopRect.Width - this.ActualWidth);
             }
 
             double y;
-            if (this.ViewState.EnvelopSize.Height < this.ActualHeight
+            if (this.ViewState.EnvelopRect.Height < this.ActualHeight
                 && Features.CentralizeImageIfSmallerThanViewport)
             {
-                y = -(this.ActualHeight - this.ViewState.EnvelopSize.Height) / 2;
+                y = -(this.ActualHeight - this.ViewState.EnvelopRect.Height) / 2;
             }
             else
             {
-                y = baseValue.Y.Clamp(0, this.ViewState.EnvelopSize.Height - this.ActualHeight);
+                y = baseValue.Y.Clamp(0, this.ViewState.EnvelopRect.Height - this.ActualHeight);
             }
 
             return new Vector(x, y);
@@ -232,11 +232,24 @@ namespace Hillinworks.TiledImage.Controls
             this.UpdateScrollability();
         }
 
-        public void Centralize()
+        public void Centralize(Point? position = null)
         {
-            this.Translate(new Vector(
-                (this.ViewState.EnvelopSize.Width - this.ActualWidth) / 2,
-                (this.ViewState.EnvelopSize.Height - this.ActualHeight) / 2));
+            Vector offset;
+            if (position != null)
+            {
+                var viewPosition = this.ViewState.WorldToEnvelopMatrix.Transform(position.Value);
+                offset = new Vector(
+                    viewPosition.X - this.ActualWidth / 2, 
+                    viewPosition.Y - this.ActualHeight / 2);
+            }
+            else
+            {
+                offset = new Vector(
+                    (this.ViewState.EnvelopRect.Width - this.ActualWidth) / 2,
+                    (this.ViewState.EnvelopRect.Height - this.ActualHeight) / 2);
+            }
+
+            this.Translate(offset);
         }
 
         private void Rotate(double rotation, Point origin)

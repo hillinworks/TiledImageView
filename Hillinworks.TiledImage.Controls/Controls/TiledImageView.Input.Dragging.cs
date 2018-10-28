@@ -13,8 +13,11 @@ namespace Hillinworks.TiledImage.Controls
 
 		private void StartDragTranslating(Point position)
 		{
-			var canHorizontallyScroll = this.CanHorizontallyScroll && this.ActualWidth < this.ViewState.EnvelopSize.Width;
-			var canVerticallyScroll = this.CanVerticallyScroll && this.ActualHeight < this.ViewState.EnvelopSize.Height;
+			var canHorizontallyScroll = this.CanHorizontallyScroll 
+			                            && this.ActualWidth < this.ViewState.EnvelopRect.Width;
+
+			var canVerticallyScroll = this.CanVerticallyScroll 
+			                          && this.ActualHeight < this.ViewState.EnvelopRect.Height;
 
 			if (canHorizontallyScroll)
 			{

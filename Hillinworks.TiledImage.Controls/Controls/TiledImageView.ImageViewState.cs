@@ -17,6 +17,7 @@ namespace Hillinworks.TiledImage.Controls
         private Matrix _worldToEnvelopMatrix;
         private Matrix _worldToViewMatrix;
         private double _zoomLevel;
+        private Rect _envelopRect;
 
         internal ImageViewState(TiledImageView owner)
         {
@@ -130,14 +131,14 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         public Size ContentSize { get; private set; }
-
-        public Size EnvelopSize
+        
+        public Rect EnvelopRect
         {
-            get => _envelopSize;
+            get => _envelopRect;
             private set
             {
-                _envelopSize = value;
-                this.Owner.ExtentSize = _envelopSize;
+                _envelopRect = value;
+                this.Owner.ExtentSize = _envelopRect.Size;
             }
         }
 
@@ -232,8 +233,13 @@ namespace Hillinworks.TiledImage.Controls
             var envelopRight = envelopBoundaryVertices.Max(v => v.X);
             var envelopTop = envelopBoundaryVertices.Min(v => v.Y);
             var envelopBottom = envelopBoundaryVertices.Max(v => v.Y);
-            this.EnvelopSize = new Size(envelopRight - envelopLeft, envelopBottom - envelopTop);
 
+            this.EnvelopRect = new Rect(
+                envelopLeft, 
+                envelopTop, 
+                envelopRight - envelopLeft,
+                envelopBottom - envelopTop);
+            
             matrix = Matrix.Identity;
 
             // first scale world space to content space
