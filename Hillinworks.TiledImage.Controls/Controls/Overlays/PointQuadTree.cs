@@ -53,5 +53,10 @@ namespace Hillinworks.TiledImage.Controls.Overlays
 
             return this.RootNode.Collect(rect);
         }
+
+        public void Clear()
+        {
+            this.RootNode = null;
+        }
     }
 }

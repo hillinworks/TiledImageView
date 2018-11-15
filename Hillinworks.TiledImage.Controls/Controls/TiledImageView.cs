@@ -69,7 +69,7 @@ namespace Hillinworks.TiledImage.Controls
             set => this.SetValue(SourceProperty, value);
         }
 
-        // ViewState and TilesManager are tightly couped all along with this control together
+        // ViewState and TilesManager are tightly coupled all along with this control together
         // They are only not null if Source is not null
         internal ImageViewState ViewState { get; private set; }
 
@@ -82,6 +82,11 @@ namespace Hillinworks.TiledImage.Controls
 
         private void OnOverlaysChanged(IEnumerable<IOverlay> oldValue, IEnumerable<IOverlay> newValue)
         {
+            if (newValue == null)
+            {
+                return;
+            }
+
             var addedOverlays = oldValue == null ? newValue : newValue.Except(oldValue);
             foreach (var overlay in addedOverlays)
             {

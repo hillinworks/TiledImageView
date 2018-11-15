@@ -129,6 +129,12 @@ namespace Hillinworks.TiledImage.Controls.Overlays
             }
         }
 
+        public void Clear()
+        {
+            this.QuadTreeItemMap.Clear();
+            this.QuadTree.Clear();
+        }
+
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
             this.CollectionChanged?.Invoke(this, args);
