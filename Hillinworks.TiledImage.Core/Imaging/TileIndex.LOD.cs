@@ -45,7 +45,7 @@ namespace Hillinworks.TiledImage.Imaging
 
             public override string ToString()
             {
-                return $"({this.Row}-{this.Column} @ LOD{this.LODLevel})";
+                return $"{this.Column}, {this.Row}, LOD{this.LODLevel}";
             }
 
             public Full ToFull(int layer)

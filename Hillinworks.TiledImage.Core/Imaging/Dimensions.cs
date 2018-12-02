@@ -30,17 +30,17 @@ namespace Hillinworks.TiledImage.Imaging
         public int LayerCount { get; }
 
         public int MinimumLayerIndex => this.LayerCount == 1 ? 1 : 0;
-        public int MaximumLayerIndex => this.LayerCount - 1;
+        public int MaximumLayerIndex => this.LayerCount == 1 ? 1 : this.LayerCount - 1;
 
         /// <summary>
-        ///     Width of left and right margin (blank space before and after content) in pixels
+        ///     Width of blank space before (to the left of) content in pixels
         /// </summary>
-        public int HorizontalMargin { get; }
+        public int ContentLeft { get; }
 
         /// <summary>
-        ///     Height of left and right margin (white space before and after content) in pixels
+        ///     Height of blank space before (on top of) content in pixels
         /// </summary>
-        public int VerticalMargin { get; }
+        public int ContentTop { get; }
 
         /// <summary>
         ///     Width of the entire image in pixels
@@ -55,12 +55,12 @@ namespace Hillinworks.TiledImage.Imaging
         /// <summary>
         ///     Width of the entire image with the blank space trimmed, in pixels
         /// </summary>
-        public int ContentWidth => this.Width - this.HorizontalMargin * 2;
+        public int ContentWidth { get; }
 
         /// <summary>
         ///     Height of the entire image with the blank space trimmed, in pixels
         /// </summary>
-        public int ContentHeight => this.Height - this.VerticalMargin * 2;
+        public int ContentHeight { get; }
 
         /// <summary>
         ///     Total tile count of a single layer in this image
@@ -78,16 +78,20 @@ namespace Hillinworks.TiledImage.Imaging
             int tileWidth,
             int tileHeight,
             int layerCount,
-            int horizontalMargin,
-            int verticalMargin)
+            int contentLeft,
+            int contentTop,
+            int contentWidth,
+            int contentHeight)
         {
             this.HorizontalTiles = horizontalTiles;
             this.VerticalTiles = verticalTiles;
             this.TileWidth = tileWidth;
             this.TileHeight = tileHeight;
             this.LayerCount = layerCount;
-            this.HorizontalMargin = horizontalMargin;
-            this.VerticalMargin = verticalMargin;
+            this.ContentLeft = contentLeft;
+            this.ContentTop = contentTop;
+            this.ContentWidth = contentWidth;
+            this.ContentHeight = contentHeight;
             this.Validate();
         }
 
@@ -95,13 +99,15 @@ namespace Hillinworks.TiledImage.Imaging
         {
             var lodFactor = (int)Math.Pow(2, lodLevel);
             return new Dimensions(
-                this.HorizontalTiles / lodFactor,
-                this.VerticalTiles / lodFactor,
+                Math.Max(1, this.HorizontalTiles / lodFactor),
+                Math.Max(1, this.VerticalTiles / lodFactor),
                 this.TileWidth,
                 this.TileHeight,
                 this.LayerCount,
-                this.HorizontalMargin / lodFactor,
-                this.VerticalMargin / lodFactor);
+                this.ContentLeft / lodFactor,
+                this.ContentTop / lodFactor,
+                this.ContentWidth / lodFactor,
+                this.ContentHeight / lodFactor);
         }
 
         internal void Validate()
@@ -131,14 +137,24 @@ namespace Hillinworks.TiledImage.Imaging
                 throw new InvalidDimensionsException($"{nameof(this.LayerCount)} must be greater than zero");
             }
 
-            if (this.HorizontalMargin < 0)
+            if (this.ContentLeft < 0)
             {
-                throw new InvalidDimensionsException($"{nameof(this.HorizontalMargin)} must be greater than or equal to zero");
+                throw new InvalidDimensionsException($"{nameof(this.ContentLeft)} must be greater than or equal to zero");
             }
 
-            if (this.VerticalMargin < 0)
+            if (this.ContentTop < 0)
             {
-                throw new InvalidDimensionsException($"{nameof(this.VerticalMargin)} must be greater than or equal to zero");
+                throw new InvalidDimensionsException($"{nameof(this.ContentTop)} must be greater than or equal to zero");
+            }
+
+            if (this.ContentWidth <= 0)
+            {
+                throw new InvalidDimensionsException($"{nameof(this.ContentWidth)} must be greater than zero");
+            }
+
+            if (this.ContentHeight <= 0)
+            {
+                throw new InvalidDimensionsException($"{nameof(this.ContentHeight)} must be greater than zero");
             }
         }
     }

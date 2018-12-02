@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Hillinworks.TiledImage.Controls.Overlays;
 using Hillinworks.TiledImage.Imaging;
+using Hillinworks.TiledImage.Imaging.Sources;
 using Hillinworks.TiledImage.Properties;
 
 namespace Hillinworks.TiledImage.Controls
@@ -15,7 +18,7 @@ namespace Hillinworks.TiledImage.Controls
         public static readonly DependencyProperty SourceProperty =
             DependencyProperty.Register(
                 nameof(Source),
-                typeof(TiledImageSource),
+                typeof(IImageSource),
                 typeof(TiledImageView),
                 new PropertyMetadata(null, OnSourceChanged));
 
@@ -63,9 +66,9 @@ namespace Hillinworks.TiledImage.Controls
             internal set => this.SetValue(ExtentSizePropertyKey, value);
         }
 
-        public TiledImageSource Source
+        public IImageSource Source
         {
-            get => (TiledImageSource)this.GetValue(SourceProperty);
+            get => (IImageSource)this.GetValue(SourceProperty);
             set => this.SetValue(SourceProperty, value);
         }
 
@@ -112,12 +115,12 @@ namespace Hillinworks.TiledImage.Controls
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((TiledImageView)d).OnSourceChanged((TiledImageSource)e.NewValue);
+            ((TiledImageView)d).OnSourceChanged((IImageSource)e.NewValue);
         }
 
-        private void OnSourceChanged(TiledImageSource image)
+        private void OnSourceChanged(IImageSource source)
         {
-            if (image == null)
+            if (source == null)
             {
                 this.ViewState = null;
                 this.TilesManager = null;
@@ -127,7 +130,7 @@ namespace Hillinworks.TiledImage.Controls
                 this.ViewState = new ImageViewState(this);
                 this.TilesManager = new ImageTilesManager(this);
                 this.ViewState.Initialize();
-                this.Zoom(image.LOD.InitialZoomLevel, this.CenterPoint);
+                this.Zoom(source.LOD.InitialZoomLevel, this.CenterPoint);
                 this.Centralize();
             }
 
@@ -163,58 +166,6 @@ namespace Hillinworks.TiledImage.Controls
 
             var tiles = this.TilesManager.Tiles;
 
-#if DEBUG
-            if (Features.DrawTileStatus)
-            {
-                var consolasTypeface = new Typeface("Consolas");
-                foreach (var tile in tiles)
-                {
-                    if (tile.LoadTask.Status == LoadTileStatus.Succeed)
-                    {
-                        continue;
-                    }
-
-                    foreach (var tileRect in tile.Regions)
-                    {
-                        var renderRect = tileRect;
-                        renderRect.Inflate(-5 * worldScale, -5 * worldScale);
-                        var debugBrush = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
-                        context.DrawRectangle(Brushes.Transparent, new Pen(debugBrush, 1 * worldScale), renderRect);
-
-                        var text = "";
-                        switch (tile.LoadTask.Status)
-                        {
-                            case LoadTileStatus.Loading:
-                                text = $"{(int)(tile.LoadTask.LoadProgress * 100)}%";
-                                break;
-                            case LoadTileStatus.Failed:
-                                text = $"Failed: {tile.LoadTask.ErrorMessage}";
-                                break;
-                            case LoadTileStatus.Canceled:
-                                text = "Canceled";
-                                break;
-                        }
-
-                        // WPF does not allow font size larger than 32768em, so we have to scale the text
-                        // using a transform
-                        context.PushTransform(new ScaleTransform(worldScale, worldScale));
-
-                        var textPosition = new Point(renderRect.X / worldScale + 5, renderRect.Y / worldScale + 5);
-
-                        context.DrawText(
-                            new FormattedText(
-                                text,
-                                CultureInfo.CurrentCulture,
-                                FlowDirection.LeftToRight,
-                                consolasTypeface,
-                                18,
-                                debugBrush),
-                            textPosition);
-                        context.Pop();
-                    }
-                }
-            }
-#endif
 
             foreach (var tile in tiles)
             {
@@ -238,6 +189,57 @@ namespace Hillinworks.TiledImage.Controls
                     }
                 }
             }
+
+
+#if DEBUG
+            if (Features.DrawTileInfo)
+            {
+                var consolasTypeface = new Typeface("Consolas");
+                foreach (var tile in tiles)
+                {
+                    foreach (var tileRect in tile.Regions)
+                    {
+                        var renderRect = tileRect;
+                        renderRect.Inflate(-5 * worldScale, -5 * worldScale);
+                        var debugBrush = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
+                        context.DrawRectangle(Brushes.Transparent, new Pen(debugBrush, 1 * worldScale), renderRect);
+
+                        var builder = new StringBuilder();
+
+                        builder.AppendLine(tile.LoadTask.Index.ToString());
+                        switch (tile.LoadTask.Status)
+                        {
+                            case LoadTileStatus.Loading:
+                                builder.AppendLine($"{(int)(tile.LoadTask.LoadProgress * 100)}%");
+                                break;
+                            case LoadTileStatus.Failed:
+                                builder.AppendLine($"Failed: {tile.LoadTask.ErrorMessage}");
+                                break;
+                            case LoadTileStatus.Canceled:
+                                builder.AppendLine("Canceled");
+                                break;
+                        }
+
+                        // WPF does not allow font size larger than 32768em, so we have to scale the text
+                        // using a transform
+                        context.PushTransform(new ScaleTransform(worldScale, worldScale));
+
+                        var textPosition = new Point(renderRect.X / worldScale + 5, renderRect.Y / worldScale + 5);
+
+                        context.DrawText(
+                            new FormattedText(
+                                builder.ToString(),
+                                CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight,
+                                consolasTypeface,
+                                12,
+                                debugBrush),
+                            textPosition);
+                        context.Pop();
+                    }
+                }
+            }
+#endif
 
             if (this.Overlays != null)
             {

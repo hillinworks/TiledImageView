@@ -4,13 +4,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Hillinworks.TiledImage.Imaging;
+using Hillinworks.TiledImage.Imaging.Sources;
 
 namespace Hillinworks.TiledImage.Controls
 {
     [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public sealed class ImageViewState
     {
-        private Size _envelopSize;
         private int _layer;
         private Vector _offset;
         private double _rotation;
@@ -25,7 +25,7 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         private TiledImageView Owner { get; }
-        private TiledImageSource TiledImage => this.Owner.Source;
+        private IImageSource TiledImage => this.Owner.Source;
         public int LODLevel { get; private set; } = -1;
         public Dimensions LODDimensions { get; private set; }
 
@@ -217,8 +217,8 @@ namespace Hillinworks.TiledImage.Controls
                 this.LODDimensions.ContentWidth / this.ViewToLODScale,
                 this.LODDimensions.ContentHeight / this.ViewToLODScale);
 
-            var horizontalMargin = this.LODDimensions.HorizontalMargin / this.ViewToLODScale;
-            var verticalMargin = this.LODDimensions.VerticalMargin / this.ViewToLODScale;
+            var horizontalMargin = this.LODDimensions.ContentLeft / this.ViewToLODScale;
+            var verticalMargin = this.LODDimensions.ContentTop / this.ViewToLODScale;
 
             var matrix = Matrix.Identity;
             matrix.RotateAt(

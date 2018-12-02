@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Hillinworks.TiledImage.Imaging.Sources;
 using Hillinworks.TiledImage.Utilities;
 
 namespace Hillinworks.TiledImage.Imaging
@@ -23,7 +24,7 @@ namespace Hillinworks.TiledImage.Imaging
         }
 
         public static async Task<BitmapSource> ClipAsync(
-            this TiledImageSource imageSource,
+            this IImageSource imageSource,
             Int32Rect bounds,
             int? layer = null,
             int? lodLevel = null)

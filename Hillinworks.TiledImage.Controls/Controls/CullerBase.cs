@@ -46,7 +46,7 @@ namespace Hillinworks.TiledImage.Controls
                 return Intersection.Intersect;
             }
 
-            // the we go with the SAT (separating axis theorem) checking
+            // then we go with the SAT (separating axis theorem) checking
             var targetVertices = targetRect.GetVertices();
             foreach (var vertices in new[] { context.WorldCullRectVertices, targetVertices })
             {

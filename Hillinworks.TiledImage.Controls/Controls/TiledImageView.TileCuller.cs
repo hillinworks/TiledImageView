@@ -27,7 +27,10 @@ namespace Hillinworks.TiledImage.Controls
             {
                 var tiles = new List<TileIndex>();
                 this.CullRecursive(
-                    new Int32Rect(0, 0, this.ViewState.LODDimensions.HorizontalTiles,
+                    new Int32Rect(
+                        0, 
+                        0, 
+                        this.ViewState.LODDimensions.HorizontalTiles,
                         this.ViewState.LODDimensions.VerticalTiles),
                     tiles);
 
@@ -37,8 +40,11 @@ namespace Hillinworks.TiledImage.Controls
             [SuppressMessage("ReSharper", "TailRecursiveCall")]
             private void CullRecursive(Int32Rect indexRegion, ICollection<TileIndex> tiles)
             {
+                // tile size in world space
                 var tileWidth = this.ViewState.LODDimensions.TileWidth * this.ViewState.LODToWorldScale;
                 var tileHeight = this.ViewState.LODDimensions.TileHeight * this.ViewState.LODToWorldScale;
+
+                // indexRegion in world space
                 var region = new Rect(
                     indexRegion.X * tileWidth,
                     indexRegion.Y * tileHeight,
@@ -49,6 +55,8 @@ namespace Hillinworks.TiledImage.Controls
                 switch (CheckIntersection(this.Context, region))
                 {
                     case Intersection.Contain:
+
+                        // the region is fully contained by current view
                         for (var row = indexRegion.Y; row < indexRegion.Y + indexRegion.Height; ++row)
                         {
                             for (var column = indexRegion.X; column < indexRegion.X + indexRegion.Width; ++column)
@@ -60,6 +68,9 @@ namespace Hillinworks.TiledImage.Controls
                         return;
 
                     case Intersection.Intersect:
+
+                        // either the region intersects with current view, or it contains current view
+
                         var halfWidth1 = indexRegion.Width / 2;
                         var halfWidth2 = indexRegion.Width - halfWidth1;
                         var halfHeight1 = indexRegion.Height / 2;
@@ -69,6 +80,7 @@ namespace Hillinworks.TiledImage.Controls
                         {
                             if (indexRegion.Height == 1)
                             {
+                                // the indexRegion cannot be subdivided any more
                                 tiles.Add(new TileIndex(indexRegion.X, indexRegion.Y));
                             }
                             else
@@ -121,19 +133,21 @@ namespace Hillinworks.TiledImage.Controls
                                 this.CullRecursive(
                                     new Int32Rect(
                                         indexRegion.X + halfWidth1,
-                                        indexRegion.Y, halfWidth2,
+                                        indexRegion.Y, 
+                                        halfWidth2,
                                         halfHeight1),
                                     tiles);
                                 this.CullRecursive(
                                     new Int32Rect(
                                         indexRegion.X,
                                         indexRegion.Y + halfHeight1,
-                                        halfWidth1, halfHeight2),
+                                        halfWidth1, 
+                                        halfHeight2),
                                     tiles);
                                 this.CullRecursive(
                                     new Int32Rect(
                                         indexRegion.X + halfWidth1,
-                                        indexRegion.Y + halfHeight2,
+                                        indexRegion.Y + halfHeight1,
                                         halfWidth2,
                                         halfHeight2),
                                     tiles);

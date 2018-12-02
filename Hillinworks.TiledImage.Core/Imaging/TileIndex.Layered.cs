@@ -44,7 +44,7 @@ namespace Hillinworks.TiledImage.Imaging
 
 			public override string ToString()
 			{
-				return $"(L{this.Layer}:{this.Row}-{this.Column})";
+				return $"{this.Column}, {this.Row}, L{this.Layer}";
 			}
 		}
 	}

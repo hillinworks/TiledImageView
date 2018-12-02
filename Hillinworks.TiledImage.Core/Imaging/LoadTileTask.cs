@@ -1,79 +1,100 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Hillinworks.TiledImage.Imaging.Sources;
 
 namespace Hillinworks.TiledImage.Imaging
 {
-	public class LoadTileTask : ILoadTileTask
-	{
-		public LoadTileTask(TileIndex.Full index)
-		{
-			this.Index = index;
-			this.Reset();
-		}
+    public class LoadTileTask
+    {
+        private LoadTileStatus _status;
 
-		private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
-		public BitmapSource Bitmap { get; private set; }
-		public LoadTileStatus Status { get; private set; }
-		public double LoadProgress { get; private set; }
-		public string ErrorMessage { get; private set; }
+        public LoadTileTask(IImageSource imageSource, TileIndex.Full index)
+        {
+            this.ImageSource = imageSource;
+            this.Index = index;
 
-		public TileIndex.Full Index { get; }
+            this.Progress.ProgressChanged += this.Progress_ProgressChanged;
+        }
 
-		CancellationToken ILoadTileTask.CancellationToken => this.CancellationTokenSource.Token;
+        private CancellationTokenSource CancellationTokenSource { get; }
+            = new CancellationTokenSource();
 
-		void ILoadTileTask.ReportProgress(double progress)
-		{
-			Debug.Assert(this.Status.IsAlive());
-			this.LoadProgress = progress;
-			this.OnLoadStateChanged();
-		}
+        private Progress<double> Progress { get; }
+            = new Progress<double>();
 
-		void ILoadTileTask.OnError(string errorMessage)
-		{
-			Debug.Assert(this.Status == LoadTileStatus.Loading);
-			this.Status = LoadTileStatus.Failed;
-			this.ErrorMessage = errorMessage;
-			this.LoadProgress = 0.0;
-			this.OnLoadStateChanged();
-		}
+        public Task<BitmapSource> LoadTask { get; private set; }
 
-		void ILoadTileTask.OnCompleted(BitmapSource bitmap)
-		{
-			Debug.Assert(this.Status == LoadTileStatus.Loading);
-			this.Status = LoadTileStatus.Succeed;
-			this.Bitmap = bitmap;
-			this.LoadProgress = 1.0;
-			this.OnLoadStateChanged();
-		}
+        public BitmapSource Bitmap { get; private set; }
 
-		void ILoadTileTask.OnCanceled()
-		{
-			Debug.Assert(this.Status == LoadTileStatus.Loading);
-			this.Status = LoadTileStatus.Canceled;
-			this.LoadProgress = 0.0;
-			this.OnLoadStateChanged();
-		}
+        public LoadTileStatus Status
+        {
+            get => _status;
+            private set
+            {
+                if (_status == value)
+                {
+                    return;
+                }
 
-		public event EventHandler LoadStateChanged;
+                _status = value;
+                this.OnStatusChanged();
+            }
+        }
 
-		public void Cancel()
-		{
-			this.CancellationTokenSource.Cancel();
-		}
+        public double LoadProgress { get; private set; }
+        public string ErrorMessage { get; private set; }
 
-		public void Reset()
-		{
-			this.Status = LoadTileStatus.Loading;
-			this.LoadProgress = 0.0;
-			this.ErrorMessage = null;
-			this.Bitmap = null;
-		}
+        public IImageSource ImageSource { get; }
+        public TileIndex.Full Index { get; }
 
-		private void OnLoadStateChanged()
-		{
-			this.LoadStateChanged?.Invoke(this, EventArgs.Empty);
-		}
-	}
+        private void Progress_ProgressChanged(object sender, double progress)
+        {
+            this.LoadProgress = progress;
+            this.OnStatusChanged();
+        }
+
+        public void BeginLoad()
+        {
+            this.Status = LoadTileStatus.Loading;
+            this.LoadProgress = 0.0;
+            this.ErrorMessage = null;
+            this.Bitmap = null;
+
+            Task.Run(this.BeginLoadAsync, this.CancellationTokenSource.Token);
+        }
+
+        private async Task BeginLoadAsync()
+        {
+            this.LoadTask = this.ImageSource.LoadTileAsync(this.Index, this.Progress, this.CancellationTokenSource.Token);
+            try
+            {
+                this.Bitmap = await this.LoadTask;
+                this.LoadProgress = 1.0;
+                this.Status = LoadTileStatus.Succeed;
+            }
+            catch (OperationCanceledException)
+            {
+                this.Status = LoadTileStatus.Canceled;
+            }
+            catch (Exception ex)
+            {
+                this.ErrorMessage = ex.Message;
+                this.Status = LoadTileStatus.Failed;
+            }
+        }
+
+        public void Cancel()
+        {
+            this.CancellationTokenSource.Cancel();
+        }
+
+        public event EventHandler StatusChanged;
+
+        private void OnStatusChanged()
+        {
+            this.StatusChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 }

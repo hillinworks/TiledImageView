@@ -40,7 +40,7 @@
 		/// <summary>
 		///     Draw status (failed, canceled, load progress etc.) and bounding boxes of tiles that haven't been loaded.
 		/// </summary>
-		public static bool DrawTileStatus { get; } = false;
+		public static bool DrawTileInfo { get; } = false;
 
 
 

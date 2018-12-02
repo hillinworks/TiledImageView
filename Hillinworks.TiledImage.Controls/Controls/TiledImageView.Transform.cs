@@ -46,7 +46,7 @@ namespace Hillinworks.TiledImage.Controls
         /// </summary>
         /// <remarks>
         /// To rotate about a point, use the <see cref="TiledImageView.Rotate"/> method. Setting this directly 
-        /// will defaultly rotate about the center of the view.
+        /// will default rotate about the center of the view.
         /// </remarks>
         public double Rotation
         {
@@ -59,7 +59,7 @@ namespace Hillinworks.TiledImage.Controls
         /// </summary>
         /// <remarks>
         /// To zoom about a point, use the <see cref="TiledImageView.Zoom"/> method. Setting this directly
-        /// will defaulty zoom about the mouse position if it's inside of the view, otherwise the center point
+        /// will default zoom about the mouse position if it's inside of the view, otherwise the center point
         /// of the view.
         /// </remarks>
         public double ZoomLevel
@@ -128,13 +128,13 @@ namespace Hillinworks.TiledImage.Controls
                 return baseValue;
             }
 
-            // todo: overzoom and underzoom should be configurable somewhere
+            // todo: over-zoom and under-zoom should be configurable somewhere
             return baseValue.Clamp(0.5, this.Source.LOD.MaxZoomLevel * 2);
         }
 
-        private static object CoerceOffset(DependencyObject d, object basevalue)
+        private static object CoerceOffset(DependencyObject d, object baseValue)
         {
-            return ((TiledImageView)d).CoerceOffset((Vector)basevalue);
+            return ((TiledImageView)d).CoerceOffset((Vector)baseValue);
         }
 
         private Vector CoerceOffset(Vector baseValue)

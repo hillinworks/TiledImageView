@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Hillinworks.TiledImage.Imaging;
+using Hillinworks.TiledImage.Imaging.Sources;
 
 namespace Hillinworks.TiledImage.Controls
 {
@@ -35,7 +36,7 @@ namespace Hillinworks.TiledImage.Controls
 
             private TiledImageView Owner { get; }
             private ImageViewState ViewState => this.Owner.ViewState;
-            private TiledImageSource TiledImage => this.Owner.Source;
+            private IImageSource ImageSource => this.Owner.Source;
 
 
             public void UpdateTiles()
@@ -103,14 +104,13 @@ namespace Hillinworks.TiledImage.Controls
             {
                 if (loadTask == null)
                 {
-                    loadTask = new LoadTileTask(tileIndex);
-                    loadTask.LoadStateChanged += this.OnLoadTileTaskStateChanged;
-                    this.TiledImage.BeginLoadTileAsync(loadTask);
+                    loadTask = new LoadTileTask(this.ImageSource, tileIndex);
+                    loadTask.StatusChanged += this.OnLoadTileTaskStatusChanged;
+                    loadTask.BeginLoad();
                 }
                 else if (!loadTask.Status.IsAlive())
                 {
-                    loadTask.Reset();
-                    this.TiledImage.BeginLoadTileAsync(loadTask);
+                    loadTask.BeginLoad();
                 }
 
                 return new TileRenderInfo(loadTask);
@@ -118,11 +118,11 @@ namespace Hillinworks.TiledImage.Controls
 
             private void DisposeLoadTileTask(LoadTileTask task)
             {
-                task.LoadStateChanged -= this.OnLoadTileTaskStateChanged;
+                task.StatusChanged -= this.OnLoadTileTaskStatusChanged;
                 task.Cancel();
             }
 
-            private void OnLoadTileTaskStateChanged(object sender, EventArgs e)
+            private void OnLoadTileTaskStatusChanged(object sender, EventArgs e)
             {
                 this.OnContentChanged();
             }

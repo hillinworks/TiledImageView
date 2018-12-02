@@ -2,6 +2,7 @@
 {
     public enum LoadTileStatus
     {
+        NotStarted,
         Loading,
         Succeed,
         Failed,

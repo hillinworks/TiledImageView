@@ -54,11 +54,11 @@
     <Compile Include="Imaging\ILoadTileTask.cs" />
     <Compile Include="Imaging\InvalidLODInfoException.cs" />
     <Compile Include="Imaging\InvalidDimensionsException.cs" />
-    <Compile Include="Imaging\TiledImageSource.cs" />
+    <Compile Include="Imaging\Sources\WebImageSource.DownloadImageTask.Observer.cs" />
     <Compile Include="Imaging\ImageDimensions.cs" />
-    <Compile Include="Imaging\Loaders\IImageLoader.cs" />
-    <Compile Include="Imaging\Loaders\WebImageLoader.cs" />
-    <Compile Include="Imaging\Loaders\WebImageLoader.DownloadImageTask.cs" />
+    <Compile Include="Imaging\Sources\IImageSource.cs" />
+    <Compile Include="Imaging\Sources\WebImageSource.cs" />
+    <Compile Include="Imaging\Sources\WebImageSource.DownloadImageTask.cs" />
     <Compile Include="Imaging\LoadTileStatus.cs" />
     <Compile Include="Imaging\LoadTileStatusExtensions.cs" />
     <Compile Include="Imaging\LoadTileTask.cs" />

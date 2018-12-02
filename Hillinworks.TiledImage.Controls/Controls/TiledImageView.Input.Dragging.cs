@@ -11,7 +11,7 @@ namespace Hillinworks.TiledImage.Controls
 		private Vector DragStartOffset { get; set; }
 
 
-		private void StartDragTranslating(Point position)
+		private void StartDragPanning(Point position)
 		{
 			var canHorizontallyScroll = this.CanHorizontallyScroll 
 			                            && this.ActualWidth < this.ViewState.EnvelopRect.Width;
