@@ -5,6 +5,7 @@ using System.Drawing;
 namespace Hillinworks.TiledImage.Controls.Overlays
 {
     internal partial class PointQuadTree<T>
+        where T : class
     {
         public PointQuadTree(Func<T, PointF> pointGetter)
         {
@@ -35,13 +36,13 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                 return false;
             }
 
-            if (Equals(item, this.RootNode.Element))
+            var result = this.RootNode.Remove(item, out var collapse);
+            if (collapse)
             {
                 this.RootNode = null;
-                return true;
             }
 
-            return this.RootNode.Remove(item);
+            return result;
         }
 
         public IEnumerable<T> Collect(RectangleF rect)

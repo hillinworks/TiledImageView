@@ -6,8 +6,34 @@ namespace Hillinworks.TiledImage.Controls.Overlays
 {
     public abstract class OverlayUserControl : UserControl, IOverlay
     {
-
         protected internal TiledImageView ImageView { get; internal set; }
+
+        protected TiledImageView AssociatedView { get; private set; }
+
+        void IOverlay.OnLayerChanged(int layer)
+        {
+            this.OnLayerChanged(layer);
+        }
+
+        void IOverlay.OnViewStateChanged(ImageViewState viewState)
+        {
+            this.OnViewStateChanged(viewState);
+        }
+
+        void IOverlay.Render(DrawingContext context)
+        {
+            this.Render(context);
+        }
+
+        public virtual Control GetControl()
+        {
+            return this;
+        }
+
+        TiledImageView IOverlay.AssociatedView
+        {
+            set => this.AssociatedView = value;
+        }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
@@ -49,21 +75,6 @@ namespace Hillinworks.TiledImage.Controls.Overlays
         {
             base.OnManipulationDelta(e);
             this.ImageView.RaiseEvent(e);
-        }
-
-        void IOverlay.OnLayerChanged(int layer)
-        {
-            this.OnLayerChanged(layer);
-        }
-
-        void IOverlay.OnViewStateChanged(ImageViewState viewState)
-        {
-            this.OnViewStateChanged(viewState);
-        }
-
-        void IOverlay.Render(DrawingContext context)
-        {
-            this.Render(context);
         }
 
         protected virtual void OnLayerChanged(int layer)

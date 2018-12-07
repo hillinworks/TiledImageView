@@ -81,7 +81,11 @@ namespace Hillinworks.TiledImage.Imaging
 
             foreach (var request in copyPixelRequests)
             {
-                request.TileImage.CopyPixels(
+                var source = request.TileImage.Format == PixelFormats.Bgr24
+                    ? request.TileImage
+                    : new FormatConvertedBitmap(request.TileImage, PixelFormats.Bgr24, null, 0);
+
+                source.CopyPixels(
                     request.SourceRect,
                     image.BackBuffer + request.DestinationRect.Y * image.BackBufferStride +
                     request.DestinationRect.X * 3,

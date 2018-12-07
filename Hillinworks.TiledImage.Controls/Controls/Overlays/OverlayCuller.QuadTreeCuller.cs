@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows;
 using slf4net;
-using Tronmedi.Collections;
 using WpfPoint = System.Windows.Point;
 
 namespace Hillinworks.TiledImage.Controls.Overlays
@@ -73,21 +72,33 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                     {
                         Logger.Debug(
                             $"{node.DebugDisplayName} fully contained by view, adding itself and all descendants");
-                        Logger.Debug($"\tADDED {node.DebugDisplayName} {node.Element.Element}");
+
+                        if (node.Element != null)
+                        {
+                            Logger.Debug($"\tADDED {node.DebugDisplayName} {node.Element.Element}");
+                        }
+
                         foreach (var descendant in node.EnumerateDescendantNodes())
                         {
-                            Logger.Debug($"\tADDED {descendant.DebugDisplayName} {descendant.Element.Element}");
+                            if (descendant.Element != null)
+                            {
+                                Logger.Debug($"\tADDED {descendant.DebugDisplayName} {descendant.Element.Element}");
+                            }
                         }
                     }
 
 #endif
-                    elements.Add(node.Element.Element);
-                    elements.AddRange(node.EnumerateDescendants().Select(i => i.Element));
+                    if (node.Element != null)
+                    {
+                        elements.Add(node.Element.Element);
+                    }
+
+                    elements.AddRange(node.EnumerateDescendants().Where(i => i.Element != null).Select(i => i.Element));
                 }
                 else if (intersection == Intersection.Intersect)
                 {
                     var viewPosition = context.ViewState.WorldToViewMatrix.Transform(ToWpfPoint(node.Point));
-                    if (context.CullRect.Contains(viewPosition))
+                    if (context.CullRect.Contains(viewPosition) && node.Element != null)
                     {
 #if DEBUG_PRINT_CULLING_PROCESS
                         if (_enablePrintCullingProcess)
@@ -111,10 +122,17 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                     if (_enablePrintCullingProcess)
                     {
                         Logger.Debug($"{node.DebugDisplayName} does not intersect with view, ruled out");
-                        Logger.Debug($"\tRULEOUT {node.DebugDisplayName} {node.Element.Element}");
+                        if (node.Element != null)
+                        {
+                            Logger.Debug($"\tRULE-OUT {node.DebugDisplayName} {node.Element.Element}");
+                        }
+
                         foreach (var descendant in node.EnumerateDescendantNodes())
                         {
-                            Logger.Debug($"\tRULEOUT {descendant.DebugDisplayName} {descendant.Element.Element}");
+                            if (descendant.Element != null)
+                            {
+                                Logger.Debug($"\tRULE-OUT {descendant.DebugDisplayName} {descendant.Element.Element}");
+                            }
                         }
                     }
                 }

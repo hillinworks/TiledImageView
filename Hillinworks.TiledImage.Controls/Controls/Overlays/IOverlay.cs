@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Hillinworks.TiledImage.Controls.Overlays
 {
@@ -7,5 +8,7 @@ namespace Hillinworks.TiledImage.Controls.Overlays
         void OnLayerChanged(int layer);
         void OnViewStateChanged(ImageViewState viewState);
         void Render(DrawingContext context);
+        Control GetControl();
+        TiledImageView AssociatedView { set; }
     }
 }

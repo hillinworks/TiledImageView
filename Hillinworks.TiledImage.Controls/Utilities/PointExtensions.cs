@@ -2,7 +2,7 @@
  // ReSharper disable once CheckNamespace
 namespace System.Windows
 {
-	public static class PointExtensions
+	internal static class PointExtensions
 	{
 		public static Point Scale(this Point p, double scale)
 		{

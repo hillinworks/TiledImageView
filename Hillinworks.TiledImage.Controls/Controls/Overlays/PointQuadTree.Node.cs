@@ -42,7 +42,7 @@ namespace Hillinworks.TiledImage.Controls.Overlays
             public RectangleF Bounds { get; private set; }
 
             private PointQuadTree<T> Tree { get; }
-            public T Element { get; }
+            public T Element { get; private set; }
 
             private Node[] SubnodeArray { get; }
                 = new Node[4];
@@ -98,6 +98,11 @@ namespace Hillinworks.TiledImage.Controls.Overlays
 
             private void InternalInsert(T item)
             {
+                if (this.TryFillCurrentElement(item))
+                {
+                    return;
+                }
+
                 var direction = this.GetSubnodeDirection(item);
                 var index = (int)direction;
 
@@ -111,6 +116,54 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                 {
                     this.SubnodeArray[index].Insert(item);
                 }
+            }
+
+            private bool TryFillCurrentElement(T item)
+            {
+                if (this.Element == null)
+                {
+                    var west = double.MinValue;
+                    var east = double.MaxValue;
+                    var north = double.MinValue;
+                    var south = double.MaxValue;
+
+                    var northwestNode = this.GetSubnode(Direction.Northwest);
+                    if (northwestNode != null)
+                    {
+                        west = Math.Max(west, northwestNode.Bounds.Right);
+                        north = Math.Max(north, northwestNode.Bounds.Bottom);
+                    }
+
+                    var northeastNode = this.GetSubnode(Direction.Northeast);
+                    if (northeastNode != null)
+                    {
+                        east = Math.Min(east, northeastNode.Bounds.Left);
+                        north = Math.Max(north, northeastNode.Bounds.Bottom);
+                    }
+
+                    var southwestNode = this.GetSubnode(Direction.Southwest);
+                    if (southwestNode != null)
+                    {
+                        west = Math.Max(west, southwestNode.Bounds.Right);
+                        south = Math.Min(south, southwestNode.Bounds.Top);
+                    }
+
+                    var southeastNode = this.GetSubnode(Direction.Southeast);
+                    if (southeastNode != null)
+                    {
+                        east = Math.Min(east, southeastNode.Bounds.Left);
+                        south = Math.Min(south, southeastNode.Bounds.Top);
+                    }
+
+                    var point = this.Tree.PointGetter(item);
+                    if (point.X > west && point.X < east && point.X > north && point.X < south)
+                    {
+                        this.Element = item;
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
             public IEnumerable<T> Collect(RectangleF rect)
@@ -129,7 +182,10 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                 Direction? collectedAnchor = null;
                 if (rect.Contains(this.Point))
                 {
-                    items.Add(this.Element);
+                    if (this.Element != null)
+                    {
+                        items.Add(this.Element);
+                    }
 
                     if (anchor != null)
                     {
@@ -171,7 +227,10 @@ namespace Hillinworks.TiledImage.Controls.Overlays
 
             private void CollectAll(ICollection<T> items)
             {
-                items.Add(this.Element);
+                if (this.Element != null)
+                {
+                    items.Add(this.Element);
+                }
 
                 foreach (var subnode in this.SubnodeArray)
                 {
@@ -195,7 +254,10 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                         continue;
                     }
 
-                    yield return subnode.Element;
+                    if (subnode.Element != null)
+                    {
+                        yield return subnode.Element;
+                    }
 
                     foreach (var descendant in subnode.EnumerateDescendants())
                     {
@@ -222,9 +284,16 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                 }
             }
 
-            public bool Remove(T item)
+            public bool Remove(T item, out bool collapse)
             {
-                Debug.Assert(!Equals(item, this.Element));
+                collapse = false;
+
+                if (Equals(item, this.Element))
+                {
+                    this.Element = null;
+                    collapse = !this.Subnodes.Any();
+                    return true;
+                }
 
                 var direction = this.GetSubnodeDirection(item);
                 var subnode = this.GetSubnode(direction);
@@ -233,26 +302,20 @@ namespace Hillinworks.TiledImage.Controls.Overlays
                     return false;
                 }
 
-                if (Equals(item, subnode.Element))
+                if (subnode.Remove(item, out var collapseSubnode))
                 {
-                    this.SubnodeArray[(int)direction] = null;
-
-                    foreach (var descendant in subnode.EnumerateDescendants())
+                    if (collapseSubnode)
                     {
-                        this.InternalInsert(descendant);
+                        this.SubnodeArray[(int)direction] = null;
+                        collapse = !this.Subnodes.Any();
                     }
 
                     this.UpdateBounds();
+
                     return true;
                 }
 
-                var result = subnode.Remove(item);
-                if (result)
-                {
-                    this.UpdateBounds();
-                }
-
-                return result;
+                return false;
             }
         }
     }

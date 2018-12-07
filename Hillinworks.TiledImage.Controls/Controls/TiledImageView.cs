@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -85,6 +86,11 @@ namespace Hillinworks.TiledImage.Controls
 
         private void OnOverlaysChanged(IEnumerable<IOverlay> oldValue, IEnumerable<IOverlay> newValue)
         {
+            if (oldValue != null && oldValue is INotifyCollectionChanged oldObservableCollection)
+            {
+                oldObservableCollection.CollectionChanged -= this.OnOverlayCollectionChanged;
+            }
+
             if (newValue == null)
             {
                 return;
@@ -93,12 +99,34 @@ namespace Hillinworks.TiledImage.Controls
             var addedOverlays = oldValue == null ? newValue : newValue.Except(oldValue);
             foreach (var overlay in addedOverlays)
             {
-                if (overlay is OverlayUserControl control)
+                this.InitializeOverlay(overlay);
+            }
+
+            if (newValue is INotifyCollectionChanged newObservableCollection)
+            {
+                newObservableCollection.CollectionChanged += this.OnOverlayCollectionChanged;
+            }
+        }
+
+        private void InitializeOverlay(IOverlay overlay)
+        {
+            overlay.AssociatedView = this;
+            if (overlay is OverlayUserControl control)
+            {
+                control.ImageView = this;
+            }
+            overlay.OnLayerChanged(this.Layer);
+            overlay.OnViewStateChanged(this.ViewState);
+        }
+
+        private void OnOverlayCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (IOverlay overlay in e.NewItems)
                 {
-                    control.ImageView = this;
+                    this.InitializeOverlay(overlay);
                 }
-                overlay.OnLayerChanged(this.Layer);
-                overlay.OnViewStateChanged(this.ViewState);
             }
         }
 
