@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Hillinworks.TiledImage.Controls
@@ -53,10 +55,11 @@ namespace Hillinworks.TiledImage.Controls
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+
             this.EndDragging();
             e.Handled = true;
         }
-
+        
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonUp(e);
@@ -64,8 +67,10 @@ namespace Hillinworks.TiledImage.Controls
             e.Handled = true;
         }
 
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
+
             base.OnMouseMove(e);
 
             var mousePosition = e.GetPosition(this);

@@ -35,6 +35,54 @@ namespace Hillinworks.TiledImage.Controls
                 typeof(TiledImageView),
                 new PropertyMetadata(1, OnLayerChanged, CoerceLayer));
 
+        public static readonly DependencyProperty MaximumUnderZoomFactorProperty =
+            DependencyProperty.Register("MaximumUnderZoomFactor", typeof(double), typeof(TiledImageView),
+                new PropertyMetadata(1.0 / 1.5, OnMaximumUnderZoomFactorChanged));
+
+        public static readonly DependencyProperty MaximumOverZoomFactorProperty =
+            DependencyProperty.Register("MaximumOverZoomFactor", typeof(double), typeof(TiledImageView),
+                new PropertyMetadata(1.5, OnMaximumOverZoomFactorChanged));
+
+        private static readonly DependencyPropertyKey MaximumZoomLevelPropertyKey =
+            DependencyProperty.RegisterReadOnly("MaximumZoomLevel", typeof(double), typeof(TiledImageView),
+                new PropertyMetadata(1.0));
+
+        public static readonly DependencyProperty MaximumZoomLevelProperty = MaximumZoomLevelPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey MinimumZoomLevelPropertyKey =
+            DependencyProperty.RegisterReadOnly("MinimumZoomLevel", typeof(double), typeof(TiledImageView),
+                new PropertyMetadata(1.0));
+
+        public static readonly DependencyProperty MinimumZoomLevelProperty = MinimumZoomLevelPropertyKey.DependencyProperty;
+
+
+        public double MaximumUnderZoomFactor
+        {
+            get => (double)this.GetValue(MaximumUnderZoomFactorProperty);
+            set => this.SetValue(MaximumUnderZoomFactorProperty, value);
+        }
+
+
+        public double MaximumOverZoomFactor
+        {
+            get => (double)this.GetValue(MaximumOverZoomFactorProperty);
+            set => this.SetValue(MaximumOverZoomFactorProperty, value);
+        }
+
+
+        public double MaximumZoomLevel
+        {
+            get => (double)this.GetValue(MaximumZoomLevelProperty);
+            private set => this.SetValue(MaximumZoomLevelPropertyKey, value);
+        }
+
+
+        public double MinimumZoomLevel
+        {
+            get => (double)this.GetValue(MinimumZoomLevelProperty);
+            private set => this.SetValue(MinimumZoomLevelPropertyKey, value);
+        }
+
         public int Layer
         {
             get => (int)this.GetValue(LayerProperty);
@@ -42,11 +90,11 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         /// <summary>
-        /// Get or set the rotation of the image.
+        ///     Get or set the rotation of the image.
         /// </summary>
         /// <remarks>
-        /// To rotate about a point, use the <see cref="TiledImageView.Rotate"/> method. Setting this directly 
-        /// will default rotate about the center of the view.
+        ///     To rotate about a point, use the <see cref="TiledImageView.Rotate" /> method. Setting this directly
+        ///     will default rotate about the center of the view.
         /// </remarks>
         public double Rotation
         {
@@ -55,12 +103,12 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         /// <summary>
-        /// Get or set the zoom level of the image.
+        ///     Get or set the zoom level of the image.
         /// </summary>
         /// <remarks>
-        /// To zoom about a point, use the <see cref="TiledImageView.Zoom"/> method. Setting this directly
-        /// will default zoom about the mouse position if it's inside of the view, otherwise the center point
-        /// of the view.
+        ///     To zoom about a point, use the <see cref="TiledImageView.Zoom" /> method. Setting this directly
+        ///     will default zoom about the mouse position if it's inside of the view, otherwise the center point
+        ///     of the view.
         /// </remarks>
         public double ZoomLevel
         {
@@ -69,7 +117,7 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         /// <summary>
-        /// Get or set the offset (translation) of the image.
+        ///     Get or set the offset (translation) of the image.
         /// </summary>
         public Vector Offset
         {
@@ -78,6 +126,52 @@ namespace Hillinworks.TiledImage.Controls
         }
 
         private Point CenterPoint => new Point(this.ActualWidth / 2, this.ActualHeight / 2);
+
+        private static void OnMaximumUnderZoomFactorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TiledImageView)d).OnMaximumUnderZoomFactorChanged((double)e.OldValue, (double)e.NewValue);
+        }
+
+        private void OnMaximumUnderZoomFactorChanged(double oldValue, double newValue)
+        {
+            if (newValue > 1 || newValue < 0.25)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newValue),
+                    $"{nameof(this.MaximumUnderZoomFactor)} should be between 0.25 and 1");
+            }
+
+            this.UpdateMinimumZoomLevel();
+
+            this.CoerceValue(ZoomLevelProperty);
+        }
+
+        private void UpdateMinimumZoomLevel()
+        {
+            this.MinimumZoomLevel = this.Source == null ? 1 : Math.Max(0.5, this.Source.LOD.MinZoomLevel * this.MaximumUnderZoomFactor);
+        }
+
+        private static void OnMaximumOverZoomFactorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TiledImageView)d).OnMaximumOverZoomFactorChanged((double)e.OldValue, (double)e.NewValue);
+        }
+
+        private void OnMaximumOverZoomFactorChanged(double oldValue, double newValue)
+        {
+            if (newValue < 1 || newValue > 4)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newValue),
+                    $"{nameof(this.MaximumOverZoomFactor)} should be between 1 and 4");
+            }
+
+            this.UpdateMaximumZoomLevel();
+
+            this.CoerceValue(ZoomLevelProperty);
+        }
+
+        private void UpdateMaximumZoomLevel()
+        {
+            this.MaximumZoomLevel = this.Source == null ? 1 : this.Source.LOD.MaxZoomLevel * this.MaximumOverZoomFactor;
+        }
 
         private static object CoerceRotation(DependencyObject d, object baseValue)
         {
@@ -128,8 +222,7 @@ namespace Hillinworks.TiledImage.Controls
                 return baseValue;
             }
 
-            // todo: over-zoom and under-zoom should be configurable somewhere
-            return baseValue.Clamp(0.5, this.Source.LOD.MaxZoomLevel * 2);
+            return baseValue.Clamp(this.MinimumZoomLevel, this.MaximumZoomLevel);
         }
 
         private static object CoerceOffset(DependencyObject d, object baseValue)
@@ -239,7 +332,7 @@ namespace Hillinworks.TiledImage.Controls
             {
                 var viewPosition = this.ViewState.WorldToEnvelopMatrix.Transform(position.Value);
                 offset = new Vector(
-                    viewPosition.X - this.ActualWidth / 2, 
+                    viewPosition.X - this.ActualWidth / 2,
                     viewPosition.Y - this.ActualHeight / 2);
             }
             else

@@ -148,6 +148,9 @@ namespace Hillinworks.TiledImage.Controls
 
         private void OnSourceChanged(IImageSource source)
         {
+            this.UpdateMinimumZoomLevel();
+            this.UpdateMaximumZoomLevel();
+
             if (source == null)
             {
                 this.ViewState = null;

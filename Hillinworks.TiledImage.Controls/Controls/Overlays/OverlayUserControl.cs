@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -35,46 +36,60 @@ namespace Hillinworks.TiledImage.Controls.Overlays
             set => this.AssociatedView = value;
         }
 
+        /// <summary>
+        /// Propagate a routed event to ImageView.
+        /// </summary>
+        /// <remarks>
+        /// Some controls could stop events from being propagated (i.e. Button for mouse up/down events).
+        /// </remarks>
+        private void PropagateEventToImageView(RoutedEventArgs e)
+        {
+            var imageViewEvent = e.Clone();
+            imageViewEvent.SetInvokingHandler(false);
+            imageViewEvent.Source = this.ImageView;
+            this.ImageView.RaiseEvent(imageViewEvent);
+        }
+
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonUp(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnManipulationStarting(ManipulationStartingEventArgs e)
         {
             base.OnManipulationStarting(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnManipulationInertiaStarting(ManipulationInertiaStartingEventArgs e)
         {
             base.OnManipulationInertiaStarting(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaEventArgs e)
         {
             base.OnManipulationDelta(e);
-            this.ImageView.RaiseEvent(e);
+            this.PropagateEventToImageView(e);
         }
 
         protected virtual void OnLayerChanged(int layer)

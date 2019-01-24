@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace Hillinworks.TiledImage.Imaging.Sources
@@ -38,6 +39,14 @@ namespace Hillinworks.TiledImage.Imaging.Sources
             downloadTask.HandleObserver(progress, cancellationToken);
 
             return downloadTask.CompletionSource.Task;
+        }
+
+        public Task<BitmapSource> LoadNamedImageAsync(
+            string name,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult((BitmapSource)null);
         }
 
         public Task<BitmapSource> CreateThumbnailAsync(double width, double height)

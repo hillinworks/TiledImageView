@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Hillinworks.TiledImage.Imaging
 {
@@ -8,13 +9,21 @@ namespace Hillinworks.TiledImage.Imaging
         public int MaxLODLevel { get; }
         public double InitialZoomLevel { get; }
         public double MaxZoomLevel { get; }
+        public double MinZoomLevel { get; }
 
-        public LODInfo(int minLODLevel, int maxLODLevel, double initialZoomLevel, double maxZoomLevel)
+        /// <summary>
+        /// Scale ratios between LOD levels.
+        /// </summary>
+        public double[] LODGaps { get; }
+
+        public LODInfo(int minLODLevel, int maxLODLevel, double initialZoomLevel, double maxZoomLevel, double[] lodGaps)
         {
             this.MinLODLevel = minLODLevel;
             this.MaxLODLevel = maxLODLevel;
             this.InitialZoomLevel = initialZoomLevel;
             this.MaxZoomLevel = maxZoomLevel;
+            this.LODGaps = lodGaps;
+            this.MinZoomLevel = lodGaps.Aggregate(maxZoomLevel, (result, gap) => result / gap);
             this.Validate();
         }
 
@@ -32,10 +41,16 @@ namespace Hillinworks.TiledImage.Imaging
                     $"{nameof(this.InitialZoomLevel)} must be greater than zero");
             }
 
-            if (this.MaxZoomLevel <= 0)
+            if (this.MinZoomLevel <= 0)
             {
                 throw new InvalidLODInfoException(
-                    $"{nameof(this.MaxZoomLevel)} must be greater than zero");
+                    $"{nameof(this.MinZoomLevel)} must be greater than zero");
+            }
+
+            if (this.MaxZoomLevel < this.MinZoomLevel)
+            {
+                throw new InvalidLODInfoException(
+                    $"{nameof(this.MaxZoomLevel)} must be greater than {this.MinZoomLevel}");
             }
 
             if (this.InitialZoomLevel > this.MaxZoomLevel)
@@ -47,13 +62,29 @@ namespace Hillinworks.TiledImage.Imaging
 
         public int CalculateLODLevel(double zoomLevel)
         {
-            return ((int)Math.Floor(Math.Log(this.MaxZoomLevel / zoomLevel, 2)))
-                .Clamp(0, this.MaxLODLevel);
+            var currentZoomLevel = this.MinZoomLevel;
+            for (var lodLevel = this.MaxLODLevel; lodLevel > this.MinLODLevel; --lodLevel)
+            {
+                if (zoomLevel <= currentZoomLevel)
+                {
+                    return lodLevel;
+                }
+
+                currentZoomLevel *= this.LODGaps[lodLevel - 1];
+            }
+
+            return this.MinLODLevel;
         }
 
-        public double CalculateZoomLevel(int lodLevel)
+        public double GetLODToWorldScale(int lodLevel)
         {
-            return this.MaxZoomLevel / Math.Pow(2, lodLevel);
+            var scale = 1.0;
+            for (var i = 0; i < lodLevel; ++i)
+            {
+                scale *= this.LODGaps[i];
+            }
+
+            return scale;
         }
     }
 }

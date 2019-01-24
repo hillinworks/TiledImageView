@@ -95,9 +95,9 @@ namespace Hillinworks.TiledImage.Imaging
             this.Validate();
         }
 
-        public Dimensions AtLODLevel(int lodLevel)
+        public Dimensions AtLODLevel(LODInfo lod, int lodLevel)
         {
-            var lodFactor = (int)Math.Pow(2, lodLevel);
+            var lodFactor = (int)lod.GetLODToWorldScale(lodLevel);
             return new Dimensions(
                 Math.Max(1, this.HorizontalTiles / lodFactor),
                 Math.Max(1, this.VerticalTiles / lodFactor),

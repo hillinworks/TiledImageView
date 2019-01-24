@@ -264,8 +264,8 @@ namespace Hillinworks.TiledImage.Controls
         {
             this.Owner.CaptureGhostImage();
             this.LODLevel = lodLevel;
-            this.LODDimensions = this.TiledImage.Dimensions.AtLODLevel(this.LODLevel);
-            this.LODToWorldScale = Math.Pow(2, this.LODLevel);
+            this.LODDimensions = this.TiledImage.GetLODDimensions(this.LODLevel);
+            this.LODToWorldScale = this.TiledImage.LOD.GetLODToWorldScale(this.LODLevel);
         }
     }
 }

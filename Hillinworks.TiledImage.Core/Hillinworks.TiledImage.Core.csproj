@@ -52,10 +52,12 @@
     <Compile Include="Imaging\Clipper.cs" />
     <Compile Include="Imaging\Dimensions.cs" />
     <Compile Include="Imaging\ILoadTileTask.cs" />
+    <Compile Include="Imaging\INativeClippable.cs" />
     <Compile Include="Imaging\InvalidLODInfoException.cs" />
     <Compile Include="Imaging\InvalidDimensionsException.cs" />
+    <Compile Include="Imaging\Sources\ImageSourceExtensions.cs" />
+    <Compile Include="Imaging\Sources\NamedImageNames.cs" />
     <Compile Include="Imaging\Sources\WebImageSource.DownloadImageTask.Observer.cs" />
-    <Compile Include="Imaging\ImageDimensions.cs" />
     <Compile Include="Imaging\Sources\IImageSource.cs" />
     <Compile Include="Imaging\Sources\WebImageSource.cs" />
     <Compile Include="Imaging\Sources\WebImageSource.DownloadImageTask.cs" />
