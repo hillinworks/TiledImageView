@@ -1,7 +1,9 @@
 ﻿
 
-// ReSharper disable once CheckNamespace
-namespace System.Windows.Input
+
+using System.Windows.Input;
+
+namespace Hillinworks.TiledImage.Extensions
 {
 	public static class MouseEventArgsExtensions
 	{

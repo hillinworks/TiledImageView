@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Hillinworks.TiledImage.Extensions;
 using Hillinworks.TiledImage.Imaging;
 using Hillinworks.TiledImage.Imaging.Sources;
 

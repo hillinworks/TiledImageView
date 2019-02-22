@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
+using System.Windows;
 
-// ReSharper disable once CheckNamespace
-namespace System.Windows
+namespace Hillinworks.TiledImage.Extensions
 {
     public static class RoutedEventArgsExtensions
     {

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Hillinworks.TiledImage.Extensions;
 using Hillinworks.TiledImage.Properties;
 
 namespace Hillinworks.TiledImage.Controls

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Hillinworks.TiledImage.Extensions;
 
 namespace Hillinworks.TiledImage.Controls
 {

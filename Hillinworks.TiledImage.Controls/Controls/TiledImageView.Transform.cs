@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using Hillinworks.TiledImage.Extensions;
 using Hillinworks.TiledImage.Properties;
 
 namespace Hillinworks.TiledImage.Controls

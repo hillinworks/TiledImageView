@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Hillinworks.TiledImage.Extensions;
 
 namespace Hillinworks.TiledImage.Controls.Overlays
 {

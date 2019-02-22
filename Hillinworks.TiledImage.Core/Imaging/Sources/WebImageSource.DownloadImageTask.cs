@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Hillinworks.TiledImage.Extensions;
 
 namespace Hillinworks.TiledImage.Imaging.Sources
 {

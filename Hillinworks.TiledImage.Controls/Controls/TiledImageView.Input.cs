@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using Hillinworks.TiledImage.Extensions;
 
 namespace Hillinworks.TiledImage.Controls
 {

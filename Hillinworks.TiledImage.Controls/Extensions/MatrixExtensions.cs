@@ -1,7 +1,10 @@
 ﻿
 
-// ReSharper disable once CheckNamespace
-namespace System.Windows.Media
+
+using System.Windows;
+using System.Windows.Media;
+
+namespace Hillinworks.TiledImage.Extensions
 {
     public static class MatrixExtensions
     {

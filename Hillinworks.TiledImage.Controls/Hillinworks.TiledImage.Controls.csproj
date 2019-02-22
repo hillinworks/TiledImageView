@@ -81,13 +81,13 @@
     <Compile Include="Controls\TileRenderInfo.cs" />
     <Compile Include="Controls\UpdateTileRequest.cs" />
     <Compile Include="Properties\Features.cs" />
-    <Compile Include="Utilities\FrameworkElementExtensions.cs" />
-    <Compile Include="Utilities\MatrixExtensions.cs" />
-    <Compile Include="Utilities\MouseEventArgsExtensions.cs" />
-    <Compile Include="Utilities\PointExtensions.cs" />
+    <Compile Include="Extensions\FrameworkElementExtensions.cs" />
+    <Compile Include="Extensions\MatrixExtensions.cs" />
+    <Compile Include="Extensions\MouseEventArgsExtensions.cs" />
+    <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Utilities\RectEx.cs" />
-    <Compile Include="Utilities\RectExtensions.cs" />
-    <Compile Include="Utilities\RoutedEventArgsExtensions.cs" />
+    <Compile Include="Extensions\RectExtensions.cs" />
+    <Compile Include="Extensions\RoutedEventArgsExtensions.cs" />
     <Page Include="Controls\TiledImageViewDebug.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

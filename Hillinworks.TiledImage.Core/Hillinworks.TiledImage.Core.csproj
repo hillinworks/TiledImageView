@@ -71,9 +71,9 @@
     <Compile Include="Imaging\TileIndex.LOD.cs" />
     <Compile Include="LoadTileFailedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\BitmapExtensions.cs" />
+    <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="Utilities\ImageCopyMetrics.cs" />
-    <Compile Include="Utilities\MathExtensions.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
